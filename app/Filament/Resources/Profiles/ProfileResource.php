@@ -8,17 +8,19 @@ use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Section;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\IconColumn;
@@ -36,7 +38,7 @@ class ProfileResource extends Resource
     protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-user-circle';
     protected static ?string $navigationLabel = 'Profili Attori';
     protected static ?string $modelLabel = 'Profilo Attore';
-    protected static UnitEnum|string|null $navigationGroup = 'Gestione Casting';
+    protected static UnitEnum|string|null $navigationGroup = 'Database';
     protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
@@ -46,7 +48,7 @@ class ProfileResource extends Resource
                 Tabs::make('Profilo Attore')
                     ->tabs([
                         // --- SCHEDA 1: Dati Generali ---
-                        Tabs\Tab::make('Anagrafica & Base')
+                        Tab::make('Anagrafica & Base')
                             ->icon('heroicon-o-user')
                             ->schema([
                                 Grid::make(2)->schema([
@@ -131,7 +133,7 @@ class ProfileResource extends Resource
                             ]),
 
                         // --- SCHEDA 2: Caratteristiche Fisiche ---
-                        Tabs\Tab::make('Aspetto Fisico')
+                        Tab::make('Aspetto Fisico')
                             ->icon('heroicon-o-face-smile')
                             ->schema([
                                 Section::make('Dati Base')
@@ -200,7 +202,7 @@ class ProfileResource extends Resource
                             ]),
 
                         // --- SCHEDA 3: Skills e Misure ---
-                        Tabs\Tab::make('Skills & Misure')
+                        Tab::make('Skills & Misure')
                             ->icon('heroicon-o-sparkles')
                             ->schema([
                                 Section::make('Capacità')
@@ -255,7 +257,7 @@ class ProfileResource extends Resource
                             ]),
 
                         // --- SCHEDA 4: Social e Contatti ---
-                        Tabs\Tab::make('Social & Link')
+                        Tab::make('Social & Link')
                             ->icon('heroicon-o-link')
                             ->schema([
                                 Section::make('Link Esterni')
@@ -276,15 +278,15 @@ class ProfileResource extends Resource
                             ]),
 
                         // --- SCHEDA 5: Media & Showreel ---
-                        Tabs\Tab::make('Media & Showreel')
+                        Tab::make('Media & Showreel')
                             ->icon('heroicon-o-film')
                             ->schema([
                                 Section::make('Materiale Fotografico')
                                     ->description('Carica le tue foto migliori (Headshots). La prima sarà la foto profilo.')
                                     ->schema([
-                                        FileUpload::make('headshots')
+                                        SpatieMediaLibraryFileUpload::make('headshots')
                                             ->label('Headshots / Book')
-                                            ->directory('profiles/headshots')
+                                            ->collection('headshots')
                                             ->image()
                                             ->imageEditor()
                                             ->multiple()
@@ -296,9 +298,9 @@ class ProfileResource extends Resource
                                 Section::make('Video & Showreel')
                                     ->description('Carica i tuoi showreel o selftape (Max 50MB a video).')
                                     ->schema([
-                                        FileUpload::make('showreels')
+                                        SpatieMediaLibraryFileUpload::make('showreels')
                                             ->label('Showreel Video')
-                                            ->directory('profiles/showreels')
+                                            ->collection('showreels')
                                             ->acceptedFileTypes(['video/mp4', 'video/quicktime'])
                                             ->maxSize(51200) // 50MB
                                             ->multiple()
@@ -362,12 +364,12 @@ class ProfileResource extends Resource
 
                 Filter::make('age_range')
                     ->form([
-                        Forms\Components\TextInput::make('min_age')
+                        TextInput::make('min_age')
                             ->label('Età minima')
                             ->numeric()
                             ->minValue(0)
                             ->maxValue(100),
-                        Forms\Components\TextInput::make('max_age')
+                        TextInput::make('max_age')
                             ->label('Età massima')
                             ->numeric()
                             ->minValue(0)
@@ -387,12 +389,12 @@ class ProfileResource extends Resource
 
                 Filter::make('height_range')
                     ->form([
-                        Forms\Components\TextInput::make('min_height')
+                        TextInput::make('min_height')
                             ->label('Altezza minima (cm)')
                             ->numeric()
                             ->minValue(50)
                             ->maxValue(250),
-                        Forms\Components\TextInput::make('max_height')
+                        TextInput::make('max_height')
                             ->label('Altezza massima (cm)')
                             ->numeric()
                             ->minValue(50)
@@ -411,17 +413,17 @@ class ProfileResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Actions\ViewAction::make(),
+                Actions\EditAction::make(),
+                Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ])
             ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
+                Actions\CreateAction::make(),
             ])
             ->defaultSort('created_at', 'desc');
     }
