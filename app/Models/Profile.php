@@ -9,6 +9,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Laravel\Scout\Searchable; // <--- Importante
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
 class Profile extends Model implements HasMedia // <--- 1. Implementa l'interfaccia

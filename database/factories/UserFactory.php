@@ -21,13 +21,20 @@ class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'role' => 'actor',
             'remember_token' => Str::random(10),
         ];
     }
@@ -39,6 +46,38 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate that the user is an admin.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'admin',
+            'email' => 'admin@example.com',
+        ]);
+    }
+
+    /**
+     * Indicate that the user is a director.
+     */
+    public function director(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'director',
+            'email' => 'director@example.com',
+        ]);
+    }
+
+    /**
+     * Indicate that the user is an actor.
+     */
+    public function actor(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'actor',
         ]);
     }
 }
