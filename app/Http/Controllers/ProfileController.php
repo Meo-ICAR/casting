@@ -61,8 +61,16 @@ class ProfileController extends Controller
     {
         $profile->load(['user', 'media']);
         return view('profiles.show', compact('profile'));
+
     }
 
+   public function casting(Profile $profile)
+    {
+            // Carichiamo i media per evitare query N+1 nella vista
+    $profile->load('media');
+
+    return view('casting.profile.show', compact('profile'));
+     }
     /**
      * Show the form for editing the specified resource.
      */

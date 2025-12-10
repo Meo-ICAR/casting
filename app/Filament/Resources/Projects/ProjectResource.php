@@ -45,9 +45,9 @@ class ProjectResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+      return [
+        RelationManagers\RolesRelationManager::class,
+    ];
     }
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder

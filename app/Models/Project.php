@@ -24,4 +24,5 @@ class Project extends Model
     {
         return $this->hasMany(Role::class);
     }
+
 }
