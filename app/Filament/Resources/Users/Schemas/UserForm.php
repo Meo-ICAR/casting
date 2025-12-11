@@ -17,7 +17,7 @@ class UserForm
                 Section::make('Informazioni Utente')
                     ->schema([
                         Grid::make(2)->schema([
-                            TextInput::make('name')
+                TextInput::make('name')
                                 ->label('Nome')
                                 ->required()
                                 ->maxLength(255),
@@ -26,9 +26,9 @@ class UserForm
                                 ->label('Cognome')
                                 ->maxLength(255),
 
-                            TextInput::make('email')
+                TextInput::make('email')
                                 ->label('Email')
-                                ->email()
+                    ->email()
                                 ->required()
                                 ->maxLength(255)
                                 ->unique(ignoreRecord: true),
@@ -49,9 +49,9 @@ class UserForm
 
                 Section::make('Password')
                     ->schema([
-                        TextInput::make('password')
+                TextInput::make('password')
                             ->label('Password')
-                            ->password()
+                    ->password()
                             ->required(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord)
                             ->dehydrated(fn ($state) => filled($state))
                             ->dehydrateStateUsing(fn ($state) => \Hash::make($state))

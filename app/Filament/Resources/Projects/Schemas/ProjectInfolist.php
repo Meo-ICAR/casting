@@ -61,12 +61,12 @@ class ProjectInfolist
                                 default => 'gray',
                             }),
 
-                        TextEntry::make('production_company')
+                TextEntry::make('production_company')
                             ->label('Casa di Produzione')
                             ->placeholder('Non specificata')
                             ->icon('heroicon-o-building-office'),
 
-                        TextEntry::make('start_date')
+                TextEntry::make('start_date')
                             ->label('Data Inizio Produzione')
                             ->date('d/m/Y')
                             ->placeholder('Non specificata')
@@ -79,12 +79,12 @@ class ProjectInfolist
                             ->color('gray')
                             ->icon('heroicon-o-user-group'),
 
-                        TextEntry::make('created_at')
+                TextEntry::make('created_at')
                             ->label('Creato il')
                             ->dateTime('d/m/Y H:i')
                             ->icon('heroicon-o-clock'),
 
-                        TextEntry::make('updated_at')
+                TextEntry::make('updated_at')
                             ->label('Ultimo Aggiornamento')
                             ->dateTime('d/m/Y H:i')
                             ->icon('heroicon-o-clock'),

@@ -31,7 +31,7 @@ class ProjectForm
                                 ->relationship('owner', 'name', fn ($query) => $query->whereIn('role', ['director', 'admin']))
                                 ->searchable()
                                 ->preload()
-                                ->required()
+                    ->required()
                                 ->default(fn () => auth()->id())
                                 ->helperText('Il direttore di casting responsabile del progetto'),
 
@@ -45,7 +45,7 @@ class ProjectForm
                                     'documentary' => 'Documentario',
                                     'web_series' => 'Web Series',
                                 ])
-                                ->required()
+                    ->required()
                                 ->default('feature_film')
                                 ->native(false),
 
@@ -57,7 +57,7 @@ class ProjectForm
                                     'wrapped' => 'Completato',
                                     'cancelled' => 'Annullato',
                                 ])
-                                ->required()
+                    ->required()
                                 ->default('casting')
                                 ->native(false),
 

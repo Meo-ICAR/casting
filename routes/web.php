@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Livewire\CastingSearch;
 use App\Http\Controllers\ProfileController;
 
@@ -27,3 +28,11 @@ Route::get('/dashboard', function () {
     // Reindirizza l'utente dove preferisci, es. alla ricerca casting
     return redirect()->route('casting.search');
 })->middleware(['auth', 'verified'])->name('dashboard'); // <--- Il nome che mancava
+
+// Logout route (per link/bottoni che usano route('logout'))
+Route::post('/logout', function () {
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/');
+})->name('logout');

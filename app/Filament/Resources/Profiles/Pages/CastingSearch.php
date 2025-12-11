@@ -3,46 +3,40 @@
 namespace App\Filament\Resources\Profiles\Pages;
 
 use App\Filament\Resources\Profiles\ProfileResource;
-use Filament\Actions;
+use App\Models\Profile;
 use Filament\Resources\Pages\Page;
 use Livewire\WithPagination;
-use App\Models\Profile;
-use Filament\Forms\Form;
-use Filament\Forms;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
-use Filament\Forms\Components\Wizard;
-use Filament\Forms\Components\Wizard\Step;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
-use Illuminate\Support\Collection;
-use Livewire\Attributes\Url;
+use BackedEnum;
+use UnitEnum;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
 
 class CastingSearch extends Page
 {
     use WithPagination;
 
     protected static string $resource = ProfileResource::class;
-    protected static string $view = 'filament.resources.profiles.pages.casting-search';
+    protected string $view = 'filament.resources.profiles.pages.casting-search';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-magnifying-glass-circle';
+    protected static ?string $navigationLabel = 'Casting Search';
+    protected static ?string $title = 'Casting Search';
+    protected static UnitEnum|string|null $navigationGroup = 'Produzione';
+    protected static ?int $navigationSort = 2;
+
+    public static function shouldRegisterNavigation(array $parameters = []): bool
+    {
+        return true;
+    }
 
     public $search = '';
     public $gender = '';
-    public $min_age = 18;
-    public $max_age = 80;
+    public $min_age = null;
+    public $max_age = null;
     public $eye_color = '';
 
-    public function mount(): void
-    {
-        parent::boot();
-    }
-
-    public function getViewData(): array
+    protected function getViewData(): array
     {
         $query = Profile::search($this->search, function ($meilisearch, $query, $options) {
             $filters = [];
@@ -51,13 +45,19 @@ class CastingSearch extends Page
                 $filters[] = 'gender = "' . $this->gender . '"';
             }
 
-            if ($this->min_age || $this->max_age) {
-                $filters[] = 'age >= ' . $this->min_age . ' AND age <= ' . $this->max_age;
+            if ($this->min_age !== null && $this->min_age !== '') {
+                $filters[] = 'age >= ' . (int) $this->min_age;
+            }
+
+            if ($this->max_age !== null && $this->max_age !== '') {
+                $filters[] = 'age <= ' . (int) $this->max_age;
             }
 
             if (!empty($this->eye_color)) {
                 $filters[] = 'eye_color = "' . $this->eye_color . '"';
             }
+
+            $filters[] = 'is_visible = true';
 
             if (!empty($filters)) {
                 $options['filter'] = implode(' AND ', $filters);

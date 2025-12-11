@@ -20,15 +20,15 @@ class RoleForm
                 Section::make('Informazioni Base')
                     ->schema([
                         Grid::make(2)->schema([
-                            Select::make('project_id')
+                Select::make('project_id')
                                 ->label('Progetto')
-                                ->relationship('project', 'title')
+                    ->relationship('project', 'title')
                                 ->searchable()
                                 ->preload()
                                 ->required()
                                 ->helperText('Seleziona il progetto a cui appartiene questo ruolo'),
 
-                            TextInput::make('name')
+                TextInput::make('name')
                                 ->label('Nome Ruolo')
                                 ->required()
                                 ->maxLength(255)
@@ -47,7 +47,7 @@ class RoleForm
                             ->label('Accetta Candidature')
                             ->default(true)
                             ->helperText('Se disattivato, il ruolo non accetterà nuove candidature')
-                            ->required(),
+                    ->required(),
                     ]),
 
                 Section::make('Requisiti')
@@ -111,7 +111,7 @@ class RoleForm
                 Section::make('Compenso')
                     ->schema([
                         Grid::make(2)->schema([
-                            TextInput::make('salary_min')
+                TextInput::make('salary_min')
                                 ->label('Compenso Minimo (€)')
                                 ->numeric()
                                 ->minValue(0)
@@ -119,7 +119,7 @@ class RoleForm
                                 ->placeholder('Es: 1000')
                                 ->helperText('Compenso minimo previsto'),
 
-                            TextInput::make('salary_max')
+                TextInput::make('salary_max')
                                 ->label('Compenso Massimo (€)')
                                 ->numeric()
                                 ->minValue(0)

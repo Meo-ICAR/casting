@@ -15,7 +15,7 @@ class RoleInfolist
             ->components([
                 Section::make('Informazioni Ruolo')
                     ->schema([
-                        TextEntry::make('project.title')
+                TextEntry::make('project.title')
                             ->label('Progetto')
                             ->icon('heroicon-o-film'),
 
@@ -25,7 +25,7 @@ class RoleInfolist
                             ->weight('bold')
                             ->icon('heroicon-o-user-group'),
 
-                        IconEntry::make('is_open')
+                IconEntry::make('is_open')
                             ->label('Stato')
                             ->boolean()
                             ->trueIcon('heroicon-o-check-circle')
@@ -56,12 +56,12 @@ class RoleInfolist
                             ->placeholder('Non specificato')
                             ->icon('heroicon-o-banknotes'),
 
-                        TextEntry::make('created_at')
+                TextEntry::make('created_at')
                             ->label('Creato il')
                             ->dateTime('d/m/Y H:i')
                             ->icon('heroicon-o-clock'),
 
-                        TextEntry::make('updated_at')
+                TextEntry::make('updated_at')
                             ->label('Ultimo Aggiornamento')
                             ->dateTime('d/m/Y H:i')
                             ->icon('heroicon-o-clock'),
