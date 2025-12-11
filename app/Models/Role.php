@@ -15,6 +15,20 @@ class Role extends Model
     protected $casts = [
         'requirements' => 'array', // JSON: {"gender": "female", "age_range": [20, 30]}
         'is_open'      => 'boolean',
+        'start_date'   => 'date',
+        'end_date'     => 'date',
+    ];
+
+    protected $fillable = [
+        'project_id',
+        'name',
+        'description',
+        'requirements',
+        'salary_min',
+        'salary_max',
+        'is_open',
+        'start_date',
+        'end_date',
     ];
 
     public function project(): BelongsTo

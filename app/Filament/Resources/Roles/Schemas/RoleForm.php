@@ -111,7 +111,7 @@ class RoleForm
                 Section::make('Compenso')
                     ->schema([
                         Grid::make(2)->schema([
-                TextInput::make('salary_min')
+                            TextInput::make('salary_min')
                                 ->label('Compenso Minimo (€)')
                                 ->numeric()
                                 ->minValue(0)
@@ -119,13 +119,32 @@ class RoleForm
                                 ->placeholder('Es: 1000')
                                 ->helperText('Compenso minimo previsto'),
 
-                TextInput::make('salary_max')
+                            TextInput::make('salary_max')
                                 ->label('Compenso Massimo (€)')
                                 ->numeric()
                                 ->minValue(0)
                                 ->prefix('€')
                                 ->placeholder('Es: 5000')
                                 ->helperText('Compenso massimo previsto'),
+                        ]),
+                    ]),
+
+                Section::make('Date del Ruolo')
+                    ->schema([
+                        Grid::make(2)->schema([
+                            \Filament\Forms\Components\DatePicker::make('start_date')
+                                ->label('Data Inizio')
+                                ->native(false)
+                                ->displayFormat('d/m/Y')
+                                ->maxDate(fn ($get) => $get('end_date') ?: null)
+                                ->helperText('Data di inizio prevista per il ruolo'),
+
+                            \Filament\Forms\Components\DatePicker::make('end_date')
+                                ->label('Data Fine')
+                                ->native(false)
+                                ->displayFormat('d/m/Y')
+                                ->minDate(fn ($get) => $get('start_date') ?: null)
+                                ->helperText('Data di fine prevista per il ruolo'),
                         ]),
                     ]),
             ]);

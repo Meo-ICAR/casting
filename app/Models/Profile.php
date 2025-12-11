@@ -81,6 +81,12 @@ class Profile extends Model implements HasMedia // <--- 1. Implementa l'interfac
         $this->addMediaCollection('showreels')
             ->acceptsMimeTypes(['video/mp4', 'video/quicktime'])
             ->useDisk('public');
+
+        // CV: File PDF, massimo 1 file
+        $this->addMediaCollection('cv')
+            ->acceptsMimeTypes(['application/pdf'])
+            ->singleFile()
+            ->useDisk('public');
     }
 
     // Cast automatico da JSON MariaDB ad Array PHP
@@ -92,6 +98,29 @@ class Profile extends Model implements HasMedia // <--- 1. Implementa l'interfac
         'socials' => 'array',
         'is_visible' => 'boolean',
         'is_represented' => 'boolean',
+        'consenso_privacy' => 'boolean',
+    ];
+
+    protected $fillable = [
+        'user_id',
+        'stage_name',
+        'slug',
+        'birth_date',
+        'gender',
+        'city',
+        'country',
+        'province',
+        'phone',
+        'height_cm',
+        'weight_kg',
+        'appearance',
+        'measurements',
+        'capabilities',
+        'socials',
+        'is_visible',
+        'is_represented',
+        'scene_nudo',
+        'consenso_privacy',
     ];
 
     // Relazione con User
@@ -104,5 +133,23 @@ class Profile extends Model implements HasMedia // <--- 1. Implementa l'interfac
     public function getAgeAttribute(): int
     {
         return Carbon::parse($this->birth_date)->age;
+    }
+
+    // Accessor per ottenere l'URL di WhatsApp
+    public function getWhatsappUrlAttribute(): ?string
+    {
+        if (empty($this->phone)) {
+            return null;
+        }
+
+        // Rimuovi spazi e caratteri speciali dal numero
+        $phone = preg_replace('/[^0-9]/', '', $this->phone);
+
+        // Aggiungi il prefisso internazionale se mancante
+        if (!str_starts_with($phone, '+')) {
+            $phone = '39' . ltrim($phone, '0'); // 39 è il prefisso italiano
+        }
+
+        return 'https://wa.me/' . $phone;
     }
 }

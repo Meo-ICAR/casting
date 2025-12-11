@@ -15,27 +15,38 @@ class ApplicationForm
     {
         return $schema
             ->components([
-                Grid::make(2)->schema([
-                    Select::make('role_id')
-                        ->label('Ruolo')
-                        ->relationship('role', 'name', fn ($query) => $query->where('is_open', true))
-                        ->searchable()
-                        ->preload()
-                        ->required()
-                        ->helperText('Seleziona il ruolo per cui l\'attore si sta candidando'),
+                Section::make('Selezione Ruolo')
+                    ->schema([
+                        Select::make('role_id')
+                            ->label('Ruolo')
+                            ->relationship(
+                                name: 'role',
+                                titleAttribute: 'name',
+                                modifyQueryUsing: fn ($query) => $query->where('is_open', true)
+                            )
+                            ->getOptionLabelFromRecordUsing(fn ($record) =>
+                                $record->name . ' - ' . ($record->project?->title ?? 'Nessun progetto')
+                            )
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->helperText('Seleziona il ruolo per cui l\'attore si sta candidando'),
+                    ]),
 
-                    Select::make('profile_id')
-                        ->label('Profilo Attore')
-                        ->relationship('profile', 'stage_name', fn ($query) => $query->with('user'))
-                        ->getOptionLabelFromRecordUsing(fn ($record) =>
-                            ($record->stage_name ?? $record->user->name ?? 'ID: ' . $record->id) .
-                            ($record->city ? ' (' . $record->city . ')' : '')
-                        )
-                        ->searchable()
-                        ->preload()
-                        ->required()
-                        ->helperText('Seleziona il profilo dell\'attore che si candida'),
-                ]),
+                Section::make('Dettagli Candidatura')
+                    ->schema([
+                        Select::make('profile_id')
+                            ->label('Profilo Attore')
+                            ->relationship('profile', 'stage_name', fn ($query) => $query->with('user'))
+                            ->getOptionLabelFromRecordUsing(fn ($record) =>
+                                ($record->stage_name ?? $record->user->name ?? 'ID: ' . $record->id) .
+                                ($record->city ? ' (' . $record->city . ')' : '')
+                            )
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->helperText('Seleziona il profilo dell\'attore che si candida'),
+                    ]),
 
                 Section::make('Stato Candidatura')
                     ->schema([

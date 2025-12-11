@@ -61,6 +61,29 @@ class RolesTable
                     ->falseColor('danger')
                     ->sortable(),
 
+                TextColumn::make('date_range')
+                    ->label('Periodo')
+                    ->getStateUsing(function ($record) {
+                        if (!$record->start_date && !$record->end_date) {
+                            return 'Non specificato';
+                        }
+
+                        $start = $record->start_date ? $record->start_date->format('d/m/Y') : 'ND';
+                        $end = $record->end_date ? $record->end_date->format('d/m/Y') : 'ND';
+                        return "$start - $end";
+                    })
+                    ->description(function ($record) {
+                        if ($record->start_date && $record->end_date) {
+                            return $record->start_date->diffForHumans($record->end_date);
+                        } elseif ($record->start_date) {
+                            return 'Inizia ' . $record->start_date->diffForHumans();
+                        } elseif ($record->end_date) {
+                            return 'Termina ' . $record->end_date->diffForHumans();
+                        }
+                        return '';
+                    })
+                    ->sortable(['start_date', 'end_date']),
+
                 TextColumn::make('created_at')
                     ->label('Creato il')
                     ->dateTime('d/m/Y')

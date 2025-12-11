@@ -36,8 +36,8 @@ class ProfileResource extends Resource
     protected static ?string $model = Profile::class;
 
     protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-user-circle';
-    protected static ?string $navigationLabel = 'Profili Attori';
-    protected static ?string $modelLabel = 'Profilo Attore';
+    protected static ?string $navigationLabel = 'Attori';
+    protected static ?string $modelLabel = 'Attore';
     protected static UnitEnum|string|null $navigationGroup = 'Database';
     protected static ?int $navigationSort = 1;
 
@@ -45,7 +45,7 @@ class ProfileResource extends Resource
     {
         return $schema
             ->schema([
-                Tabs::make('Profilo Attore')
+                Tabs::make('Attore')
                     ->tabs([
                         // --- SCHEDA 1: Dati Generali ---
                         Tab::make('Anagrafica & Base')
@@ -102,7 +102,7 @@ class ProfileResource extends Resource
                                 ]),
 
                                 Section::make('Localizzazione')
-                                    ->columns(3)
+                                    ->columns(2)
                                     ->schema([
                                         TextInput::make('city')
                                             ->label('Città Residenza')
@@ -114,14 +114,36 @@ class ProfileResource extends Resource
                                             ->label('Nazione')
                                             ->default('IT')
                                             ->required(),
+                                        TextInput::make('phone')
+                                            ->label('Telefono (WhatsApp)')
+                                            ->tel()
+                                            ->maxLength(20)
+                                            ->helperText('Inserisci il numero con prefisso internazionale (es. +39 123 456 7890)'),
                                     ]),
 
                                 // Toggle per visibilità e agenzia
                                 Section::make('Stato')
                                     ->schema([
                                         Toggle::make('is_visible')
-                                            ->label('Visibile nel portale')
-                                            ->default(true),
+                                            ->label('Visibile nel Casting')
+                                            ->default(true)
+                                            ->inline(false),
+
+                                        Select::make('scene_nudo')
+                                            ->label('Disponibilità Scene di Nudo')
+                                            ->options([
+                                                'no' => 'No',
+                                                'parziale' => 'Parziale',
+                                                'si' => 'Sì',
+                                            ])
+                                            ->default('no')
+                                            ->required(),
+
+                                        Toggle::make('consenso_privacy')
+                                            ->label('Consenso al trattamento dei dati personali')
+                                            ->required()
+                                            ->inline(false),
+
                                         Toggle::make('is_represented')
                                             ->label('Rappresentato da agenzia')
                                             ->reactive(),
@@ -307,12 +329,218 @@ class ProfileResource extends Resource
                                             ->maxFiles(3)
                                             ->columnSpanFull(),
                                     ]),
+
+                                Section::make('Documenti')
+                                    ->description('Carica il tuo curriculum vitae in formato PDF.')
+                                    ->schema([
+                                        SpatieMediaLibraryFileUpload::make('cv')
+                                            ->label('Curriculum Vitae (PDF)')
+                                            ->collection('cv')
+                                            ->acceptedFileTypes(['application/pdf'])
+                                            ->maxSize(2048) // 2MB
+                                            ->downloadable()
+                                            ->openable()
+                                            ->hint('Massimo 2MB, solo PDF')
+                                            ->columnSpanFull(),
+                                    ]),
                             ]),
                     ])
                     ->columnSpanFull(),
             ]);
     }
+ public static function table(Table $table): Table
+{
+    return $table
+        // 1. GRIGLIA RESPONSIVE
+        ->contentGrid([
+            'md' => 2,
+            'xl' => 3,
+            '2xl' => 4,
+        ])
 
+        // 2. LAYOUT CARD
+        ->columns([
+            \Filament\Tables\Columns\Layout\Stack::make([
+
+                // FOTO COPERTINA
+                \Filament\Tables\Columns\ImageColumn::make('profile_photo')
+                    ->label('')
+                    // Usiamo la logica per prendere l'immagine convertita (thumb)
+                    ->getStateUsing(fn ($record) => $record->getFirstMediaUrl('headshots', 'thumb'))
+                    ->height('250px')
+                    ->width('100%')
+                    ->extraImgAttributes(['class' => 'object-cover w-full rounded-t-xl']),
+
+                // PANNELLO DATI
+                \Filament\Tables\Columns\Layout\Panel::make([
+                    \Filament\Tables\Columns\Layout\Stack::make([
+
+                        // Riga 1: Nome (Grande) e Età (Badge)
+                        \Filament\Tables\Columns\Layout\Split::make([
+                            \Filament\Tables\Columns\TextColumn::make('stage_name')
+                                ->weight('bold') // Usa stringa semplice
+                                ->size('lg')     // CORRETTO: Usa stringa 'lg' invece della classe
+                                ->searchable(),
+
+                            \Filament\Tables\Columns\TextColumn::make('age')
+                                ->formatStateUsing(fn ($state) => $state . ' anni')
+                                ->badge()
+                                ->color('gray')
+                                ->alignEnd(),
+                        ]),
+
+                        // Riga 2: Altezza e Visibilità
+                        \Filament\Tables\Columns\Layout\Split::make([
+                            \Filament\Tables\Columns\TextColumn::make('height_cm')
+                                ->formatStateUsing(fn ($state) => $state . ' cm')
+                                ->icon('heroicon-m-arrows-up-down')
+                                ->color('gray')
+                                ->size('sm'), // CORRETTO: Usa stringa 'sm'
+
+                            \Filament\Tables\Columns\TextColumn::make('scene_nudo')
+                                ->badge()
+                                ->color(fn (string $state): string => match ($state) {
+                                    'no' => 'gray',
+                                    'parziale' => 'warning',
+                                    'si' => 'success',
+                                    default => 'gray',
+                                })
+                                ->formatStateUsing(fn (string $state): string => match ($state) {
+                                    'no' => 'No Nudo',
+                                    'parziale' => 'Nudo Parziale',
+                                    'si' => 'Nudo Completo',
+                                    default => $state,
+                                })
+                                ->alignEnd(),
+                        ]),
+
+                        // Riga 3: Visibilità e Privacy
+                        \Filament\Tables\Columns\Layout\Split::make([
+                            \Filament\Tables\Columns\TextColumn::make('consenso_privacy')
+                                ->formatStateUsing(fn ($state) => $state ? '✅ Consenso Privacy' : '❌ Manca Consenso')
+                                ->color(fn ($state) => $state ? 'success' : 'danger')
+                                ->size('xs'),
+
+                            \Filament\Tables\Columns\IconColumn::make('is_visible')
+                                ->boolean()
+                                ->label('Visibile')
+                                ->alignEnd(),
+                        ]),
+
+                        // Riga 4: Telefono con WhatsApp
+                        \Filament\Tables\Columns\Layout\Split::make([
+                            \Filament\Tables\Columns\TextColumn::make('phone')
+                                ->label('')
+                                ->formatStateUsing(fn ($state) => $state ?: 'Nessun telefono')
+                                ->color('gray')
+                                ->size('xs')
+                                ->icon('heroicon-o-phone')
+                                ->iconPosition('before'),
+
+                            \Filament\Tables\Columns\IconColumn::make('whatsapp_url')
+                                ->label('')
+                                ->icon('heroicon-o-phone-arrow-up-right')
+                                ->color('success')
+                                ->url(fn ($record) => $record->whatsapp_url, true)
+                                ->openUrlInNewTab()
+                                ->visible(fn ($record) => !empty($record->phone))
+                                ->tooltip('Apri WhatsApp')
+                                ->alignEnd(),
+                        ]),
+
+                        // Riga 5: Nome Utente (piccolo)
+                        \Filament\Tables\Columns\TextColumn::make('user.name')
+                            ->prefix('Utente: ')
+                            ->color('gray')
+                            ->size('xs'), // CORRETTO: Usa stringa 'xs'
+                    ])->space(2),
+                ])->extraAttributes(['class' => 'bg-white p-4 rounded-b-xl border-x border-b border-gray-200 dark:bg-gray-900 dark:border-gray-700']),
+
+            ])->space(0)
+        ])
+
+        // 3. I FILTRI (INVARIATI)
+
+   ->filters([
+                SelectFilter::make('gender')
+                    ->label('Genere')
+                    ->options([
+                        'male' => 'Uomo',
+                        'female' => 'Donna',
+                        'non_binary' => 'Non-Binary',
+                    ]),
+
+                Filter::make('age_range')
+                    ->form([
+                        TextInput::make('min_age')
+                            ->label('Età minima')
+                            ->numeric()
+                            ->minValue(0)
+                            ->maxValue(100),
+                        TextInput::make('max_age')
+                            ->label('Età massima')
+                            ->numeric()
+                            ->minValue(0)
+                            ->maxValue(100),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['min_age'],
+                                fn (Builder $query, $minAge): Builder => $query->where('birth_date', '<=', now()->subYears($minAge)),
+                            )
+                            ->when(
+                                $data['max_age'],
+                                fn (Builder $query, $maxAge): Builder => $query->where('birth_date', '>=', now()->subYears($maxAge + 1)),
+                            );
+                    }),
+
+                Filter::make('height_range')
+                    ->form([
+                        TextInput::make('min_height')
+                            ->label('Altezza minima (cm)')
+                            ->numeric()
+                            ->minValue(50)
+                            ->maxValue(250),
+                        TextInput::make('max_height')
+                            ->label('Altezza massima (cm)')
+                            ->numeric()
+                            ->minValue(50)
+                            ->maxValue(250),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['min_height'],
+                                fn (Builder $query, $minHeight): Builder => $query->where('height_cm', '>=', $minHeight),
+                            )
+                            ->when(
+                                $data['max_height'],
+                                fn (Builder $query, $maxHeight): Builder => $query->where('height_cm', '<=', $maxHeight),
+                            );
+                    }),
+            ])
+
+
+        // 4. AZIONI (INVARIATE)
+        ->actions([
+                Actions\ViewAction::make(),
+                Actions\EditAction::make(),
+                Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
+                ]),
+            ])
+            ->emptyStateActions([
+                Actions\CreateAction::make(),
+            ])
+            ->striped(false)
+            ->defaultSort('created_at', 'desc');
+    }
+
+/*
     public static function table(Table $table): Table
     {
         return $table
@@ -427,7 +655,7 @@ class ProfileResource extends Resource
             ])
             ->defaultSort('created_at', 'desc');
     }
-
+*/
     public static function getRelations(): array
     {
         return [
