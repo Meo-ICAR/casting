@@ -10,6 +10,7 @@ use App\Filament\Resources\Services\Schemas\ServiceForm;
 use App\Filament\Resources\Services\Schemas\ServiceInfolist;
 use App\Filament\Resources\Services\Tables\ServicesTable;
 use App\Models\Service;
+use App\Models\ServiceType;
 use BackedEnum;
 use UnitEnum;
 use Filament\Resources\Resource;

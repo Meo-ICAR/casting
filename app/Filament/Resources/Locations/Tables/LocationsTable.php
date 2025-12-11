@@ -7,10 +7,15 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\DeleteAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use App\Models\Location;
 
 class LocationsTable
 {
@@ -18,53 +23,88 @@ class LocationsTable
     {
         return $table
             ->columns([
+                ImageColumn::make('thumbnail')
+                    ->label('')
+                    ->getStateUsing(fn ($record) => $record->getFirstMediaUrl('photos', 'thumb'))
+                    ->circular()
+                    ->defaultImageUrl(url('/images/default-avatar.png'))
+                    ->size(50),
+
                 TextColumn::make('name')
-                    ->searchable(),
-                TextColumn::make('address')
-                    ->searchable(),
+                    ->label('Nome')
+                    ->searchable()
+                    ->sortable()
+                    ->weight('bold'),
+
                 TextColumn::make('city')
-                    ->searchable(),
+                    ->label('Città')
+                    ->searchable()
+                    ->sortable(),
+
                 TextColumn::make('province')
-                    ->searchable(),
-                TextColumn::make('postal_code')
-                    ->searchable(),
+                    ->label('Prov.')
+                    ->searchable()
+                    ->sortable()
+                    ->limit(3),
+
                 TextColumn::make('country')
-                    ->searchable(),
-                TextColumn::make('latitude')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('longitude')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('Nazione')
+                    ->searchable()
+                    ->sortable()
+                    ->limit(3),
+
                 TextColumn::make('contact_person')
-                    ->searchable(),
+                    ->label('Contatto')
+                    ->searchable()
+                    ->toggleable(),
+
                 TextColumn::make('contact_phone')
-                    ->searchable(),
-                TextColumn::make('contact_email')
-                    ->searchable(),
-                TextColumn::make('created_by')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('Telefono')
+                    ->searchable()
+                    ->toggleable(),
+
                 IconColumn::make('is_active')
-                    ->boolean(),
-                TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->label('Attivo')
+                    ->boolean()
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->sortable(),
+
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Creato il')
+                    ->dateTime('d/m/Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Aggiornato il')
+                    ->dateTime('d/m/Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 TrashedFilter::make(),
+                SelectFilter::make('city')
+                    ->label('Città')
+                    ->options(fn () => Location::query()
+                        ->whereNotNull('city')
+                        ->distinct()
+                        ->orderBy('city')
+                        ->pluck('city', 'city'))
+                    ->multiple()
+                    ->searchable(),
+                SelectFilter::make('is_active')
+                    ->label('Stato')
+                    ->options([
+                        1 => 'Attivo',
+                        0 => 'Non Attivo',
+                    ])
+                    ->native(false),
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

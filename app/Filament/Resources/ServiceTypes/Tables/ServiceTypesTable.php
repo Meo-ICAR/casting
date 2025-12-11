@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Filament\Resources\Services\Tables;
+namespace App\Filament\Resources\ServiceTypes\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Actions\DeleteAction;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use App\Models\ServiceType;
 
-class ServicesTable
+class ServiceTypesTable
 {
     public static function configure(Table $table): Table
     {
@@ -25,40 +24,14 @@ class ServicesTable
                     ->sortable()
                     ->weight('bold'),
 
-                TextColumn::make('serviceType.name')
-                    ->label('Tipo Servizio')
-                    ->badge()
-                    ->color('gray')
-                    ->placeholder('Non specificato')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('contact_name')
-                    ->label('Contatto')
-                    ->searchable()
-                    ->toggleable(),
-
-                TextColumn::make('city')
-                    ->label('Città')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('email')
-                    ->label('Email')
-                    ->searchable()
-                    ->icon('heroicon-o-envelope')
-                    ->toggleable(),
-
-                TextColumn::make('phone')
-                    ->label('Telefono')
+                TextColumn::make('slug')
+                    ->label('Slug')
                     ->searchable()
                     ->toggleable(),
 
                 IconColumn::make('is_active')
                     ->label('Attivo')
                     ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
                     ->falseColor('danger')
                     ->sortable(),
@@ -76,15 +49,6 @@ class ServicesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('service_type_id')
-                    ->label('Tipo Servizio')
-                    ->options(fn () => ServiceType::query()
-                        ->where('is_active', true)
-                        ->orderBy('name')
-                        ->pluck('name', 'id'))
-                    ->multiple()
-                    ->native(false),
-
                 SelectFilter::make('is_active')
                     ->label('Stato')
                     ->options([
@@ -92,11 +56,6 @@ class ServicesTable
                         0 => 'Non Attivo',
                     ])
                     ->native(false),
-
-                SelectFilter::make('city')
-                    ->label('Città')
-                    ->multiple()
-                    ->searchable(),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -107,7 +66,6 @@ class ServicesTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ])
-            ->defaultSort('created_at', 'desc');
+            ]);
     }
 }

@@ -6,6 +6,7 @@ use App\Filament\Resources\Profiles\Pages;
 use App\Models\Profile;
 use Filament\Forms;
 use Filament\Resources\Resource;
+use App\Filament\Resources\Profiles\Pages\CastingSearch;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Actions;
@@ -26,6 +27,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
+use Filament\Navigation\NavigationItem;
 use Illuminate\Support\Carbon;
 use BackedEnum;
 use UnitEnum;
@@ -443,6 +445,7 @@ class ProfileResource extends Resource
             'create' => Pages\CreateProfile::route('/create'),
             'view' => Pages\ViewProfile::route('/{record}'),
             'edit' => Pages\EditProfile::route('/{record}/edit'),
+            'casting-search' => Pages\CastingSearch::route('/casting-search'),
         ];
     }
 

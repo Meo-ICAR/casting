@@ -22,3 +22,8 @@ Route::get('/casting/search', CastingSearch::class)
 // Esempio URL: /talent/mario-rossi
 Route::get('/talent/{profile:slug}', [ProfileController::class, 'show'])
     ->name('profile.show');
+
+Route::get('/dashboard', function () {
+    // Reindirizza l'utente dove preferisci, es. alla ricerca casting
+    return redirect()->route('casting.search');
+})->middleware(['auth', 'verified'])->name('dashboard'); // <--- Il nome che mancava

@@ -5,7 +5,9 @@ namespace App\Livewire;
 use App\Models\Profile;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Layout;
 
+#[Layout('components.layouts.app')]
 class CastingSearch extends Component
 {
     use WithPagination;

@@ -2,18 +2,17 @@
 
 namespace App\Filament\Resources\Locations\Schemas;
 
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Schema;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Storage;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class LocationForm
 {
@@ -21,80 +20,86 @@ class LocationForm
     {
         return $schema
             ->components([
-                Section::make('Location Details')
+                Section::make('Dettagli Location')
                     ->schema([
                         Grid::make(2)
                             ->schema([
                                 TextInput::make('name')
+                                    ->label('Nome Location')
                                     ->required()
-                                    ->maxLength(255),
+                                    ->maxLength(255)
+                                    ->placeholder('Es. Villa storica, Studio 1, Capannone industriale'),
                                 TextInput::make('city')
+                                    ->label('Città')
                                     ->required()
                                     ->maxLength(100),
                                 TextInput::make('province')
+                                    ->label('Provincia')
                                     ->maxLength(2),
                                 TextInput::make('postal_code')
+                                    ->label('CAP')
                                     ->maxLength(10),
                                 Select::make('country')
+                                    ->label('Nazione')
                                     ->options([
-                                        'IT' => 'Italy',
-                                        'US' => 'United States',
-                                        'GB' => 'United Kingdom',
-                                        'DE' => 'Germany',
-                                        'FR' => 'France',
-                                        'ES' => 'Spain',
+                                        'IT' => 'Italia',
+                                        'US' => 'Stati Uniti',
+                                        'GB' => 'Regno Unito',
+                                        'DE' => 'Germania',
+                                        'FR' => 'Francia',
+                                        'ES' => 'Spagna',
                                     ])
                                     ->default('IT')
                                     ->required(),
                                 Toggle::make('is_active')
+                                    ->label('Attiva')
                                     ->default(true)
                                     ->required(),
                             ]),
                         TextInput::make('address')
+                            ->label('Indirizzo')
                             ->required()
                             ->maxLength(255),
                         Textarea::make('description')
+                            ->label('Descrizione')
+                            ->placeholder('Descrizione della location, spazi disponibili, logistica, accessi...')
                             ->columnSpanFull(),
                     ]),
 
-                Section::make('Location Photos')
+                Section::make('Foto Location')
                     ->schema([
-                        FileUpload::make('photos')
-                            ->multiple()
+                        SpatieMediaLibraryFileUpload::make('photos')
+                            ->label('Foto della Location')
+                            ->collection('photos')
                             ->image()
-                            ->directory('locations')
                             ->imageEditor()
-                            ->imageEditorAspectRatios([
-                                null,
-                                '16:9',
-                                '4:3',
-                                '1:1',
-                            ])
-                            ->maxSize(10240) // 10MB
+                            ->multiple()
                             ->reorderable()
-                            ->appendFiles()
-                            ->downloadable()
-                            ->openable()
-                            ->previewable(true)
+                            ->maxFiles(20)
+                            ->maxSize(10240) // 10MB
                             ->columnSpanFull(),
                     ]),
 
-                Section::make('Contact Information')
+                Section::make('Contatti')
                     ->schema([
                         TextInput::make('contact_person')
+                            ->label('Referente')
                             ->maxLength(255),
                         TextInput::make('contact_phone')
+                            ->label('Telefono')
                             ->tel()
                             ->maxLength(50),
                         TextInput::make('contact_email')
+                            ->label('Email')
                             ->email()
                             ->maxLength(255),
                     ]),
 
-                Section::make('Location on Map')
-                    ->description('Add coordinates to show this location on the map')
+                Section::make('Mappa')
+                    ->description('Aggiungi coordinate per mostrare la location sulla mappa')
                     ->schema([
                         TextInput::make('latitude')
+                            ->label('Latitudine')
                             ->numeric()
                             ->reactive()
                             ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
@@ -103,6 +108,7 @@ class LocationForm
                                 }
                             }),
                         TextInput::make('longitude')
+                            ->label('Longitudine')
                             ->numeric()
                             ->reactive()
                             ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
@@ -112,12 +118,16 @@ class LocationForm
                             }),
                     ]),
 
-                Section::make('Additional Information')
+                Section::make('Informazioni Aggiuntive')
                     ->schema([
-                        Textarea::make('features')
-                            ->columnSpanFull()
-                            ->helperText('Enter features as a JSON object, e.g. {"parking": true, "indoor": false}'),
+                        TagsInput::make('features')
+                            ->label('Caratteristiche (tag)')
+                            ->placeholder('Parcheggio, Interni, Esterni, Ufficio produzione...')
+                            ->separator(',')
+                            ->suggestions(['Parcheggio', 'Interni', 'Esterni', 'Spogliatoi', 'Magazzino', 'Ufficio produzione'])
+                            ->columnSpanFull(),
                         Textarea::make('notes')
+                            ->label('Note interne')
                             ->columnSpanFull(),
                     ]),
             ]);

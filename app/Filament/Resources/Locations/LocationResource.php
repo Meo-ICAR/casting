@@ -6,8 +6,8 @@ use App\Filament\Resources\Locations\Pages\CreateLocation;
 use App\Filament\Resources\Locations\Pages\EditLocation;
 use App\Filament\Resources\Locations\Pages\ListLocations;
 use App\Filament\Resources\Locations\Pages\ViewLocation;
-use App\Filament\Resources\Locations\Pages\LocationForm;
 use App\Filament\Resources\Locations\Schemas\LocationInfolist;
+use App\Filament\Resources\Locations\Schemas\LocationForm;
 use App\Filament\Resources\Locations\Tables\LocationsTable;
 use App\Models\Location;
 use BackedEnum;
@@ -21,15 +21,15 @@ class LocationResource extends Resource
 {
     protected static ?string $model = Location::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-    protected static ?string $navigationLabel = 'Locations';
-    protected static ?string $modelLabel = 'Locations';
-    protected static ?string $pluralModelLabel = 'Locations';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMap;
+    protected static ?string $navigationLabel = 'Location';
+    protected static ?string $modelLabel = 'Location';
+    protected static ?string $pluralModelLabel = 'Location';
     protected static UnitEnum|string|null $navigationGroup = 'Database';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
 
-  public static function form(Schema $schema): Schema
+    public static function form(Schema $schema): Schema
     {
         return LocationForm::configure($schema);
     }
@@ -41,7 +41,7 @@ class LocationResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return LocationTable::configure($table);
+        return LocationsTable::configure($table);
     }
 
     public static function getRelations(): array
@@ -54,7 +54,7 @@ class LocationResource extends Resource
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         return parent::getEloquentQuery()
-            ->with(['user']);
+            ->with(['creator', 'media']);
     }
 
     public static function getPages(): array

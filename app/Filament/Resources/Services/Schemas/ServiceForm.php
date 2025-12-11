@@ -19,25 +19,13 @@ class ServiceForm
                 Section::make('Informazioni Base')
                     ->schema([
                         Grid::make(2)->schema([
-                            Select::make('service_type')
+                            Select::make('service_type_id')
                                 ->label('Tipo Servizio')
-                                ->options([
-                                    'catering' => 'Catering',
-                                    'hair' => 'Parrucchiere',
-                                    'makeup' => 'Truccatrice',
-                                    'costume' => 'Sartoria/Costumi',
-                                    'location' => 'Location',
-                                    'equipment' => 'Attrezzature',
-                                    'transport' => 'Trasporti',
-                                    'security' => 'Sicurezza',
-                                    'photography' => 'Fotografia',
-                                    'video' => 'Video',
-                                    'sound' => 'Audio',
-                                    'other' => 'Altro',
-                                ])
+                                ->relationship('serviceType', 'name', fn ($query) => $query->where('is_active', true))
+                                ->searchable()
+                                ->preload()
                                 ->required()
-                                ->native(false)
-                                ->searchable(),
+                                ->helperText('Gestisci i tipi di servizio nella tab \"Tipi di Servizio\"'),
 
                             TextInput::make('name')
                                 ->label('Nome Azienda/Persona')
@@ -112,7 +100,7 @@ class ServiceForm
                             TextInput::make('province')
                                 ->label('Provincia')
                                 ->maxLength(2)
-                                ->uppercase()
+                                ->dehydrateStateUsing(fn ($state) => $state ? strtoupper($state) : null)
                                 ->placeholder('RM'),
 
                             TextInput::make('postal_code')

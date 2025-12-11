@@ -16,6 +16,11 @@ class Service extends Model
         'is_active' => 'boolean',
     ];
 
+    public function serviceType(): BelongsTo
+    {
+        return $this->belongsTo(ServiceType::class);
+    }
+
     // Relazione con User (opzionale)
     public function user(): BelongsTo
     {
@@ -25,21 +30,13 @@ class Service extends Model
     // Helper per ottenere il tipo di servizio formattato
     public function getServiceTypeLabelAttribute(): string
     {
-        return match($this->service_type) {
-            'catering' => 'Catering',
-            'hair' => 'Parrucchiere',
-            'makeup' => 'Truccatrice',
-            'costume' => 'Sartoria/Costumi',
-            'location' => 'Location',
-            'equipment' => 'Attrezzature',
-            'transport' => 'Trasporti',
-            'security' => 'Sicurezza',
-            'photography' => 'Fotografia',
-            'video' => 'Video',
-            'sound' => 'Audio',
-            'other' => 'Altro',
-            default => ucfirst($this->service_type),
-        };
+        if ($this->relationLoaded('serviceType') && $this->serviceType) {
+            return $this->serviceType->name;
+        }
+
+        return $this->service_type
+            ? ucfirst($this->service_type)
+            : 'Non specificato';
     }
 
     // Scope per servizi attivi

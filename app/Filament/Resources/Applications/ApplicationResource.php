@@ -26,7 +26,7 @@ class ApplicationResource extends Resource
     protected static ?string $modelLabel = 'Candidatura';
     protected static ?string $pluralModelLabel = 'Candidature';
     protected static UnitEnum|string|null $navigationGroup = 'Produzione';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
 
     public static function form(Schema $schema): Schema
     {
