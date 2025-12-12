@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\HasWhatsapp; // <--- Importa il Trait
 
 class Service extends Model
 {
     use HasFactory;
+    use HasWhatsapp; // <--- Attivalo qui
 
     protected $guarded = [];
 

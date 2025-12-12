@@ -10,12 +10,14 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Laravel\Scout\Searchable; // <--- Importante
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\HasWhatsapp; // <--- Importa il Trait
 
 
 class Profile extends Model implements HasMedia // <--- 1. Implementa l'interfaccia
 {
     use InteractsWithMedia; // <--- 2. Usa il Trait
     use Searchable; // <--- Aggiungi il Trait
+    use HasWhatsapp; // <--- Attivalo qui
 
     protected $guarded = [];
 

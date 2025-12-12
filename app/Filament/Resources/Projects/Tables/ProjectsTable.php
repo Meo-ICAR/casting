@@ -128,9 +128,9 @@ class ProjectsTable
                     ->preload(),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
+           //     ViewAction::make(),
+           //     EditAction::make(),
+           //     DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

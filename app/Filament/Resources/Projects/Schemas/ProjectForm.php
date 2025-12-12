@@ -82,7 +82,14 @@ class ProjectForm
                             ->columnSpanFull()
                             ->placeholder('Descrizione dettagliata del progetto, sinossi, note per gli attori...')
                             ->helperText('Informazioni che verranno mostrate agli attori interessati'),
-                    ]),
+                    TextInput::make('city')
+                                ->label('Città')
+                                ->required()
+                                ->maxLength(255)
+                                ->placeholder('Es: Milano, Roma, Napoli')
+                                ->helperText('Città dove si svolgono prevalentemente le riprese')
+
+                    ])
             ]);
     }
 }

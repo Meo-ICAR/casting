@@ -20,20 +20,48 @@ class RoleForm
                 Section::make('Informazioni Base')
                     ->schema([
                         Grid::make(2)->schema([
-                Select::make('project_id')
+                            Select::make('project_id')
                                 ->label('Progetto')
-                    ->relationship('project', 'title')
+                                ->relationship('project', 'title')
                                 ->searchable()
                                 ->preload()
                                 ->required()
                                 ->helperText('Seleziona il progetto a cui appartiene questo ruolo'),
 
-                TextInput::make('name')
+                            TextInput::make('name')
                                 ->label('Nome Ruolo')
                                 ->required()
                                 ->maxLength(255)
                                 ->placeholder('Es: Protagonista, Antagonista, Compagno/a')
                                 ->helperText('Nome del ruolo nel progetto'),
+
+                            TextInput::make('city')
+                                ->label('Città')
+                                ->required()
+                                ->maxLength(255)
+                                ->placeholder('Es: Milano, Roma, Napoli')
+                                ->helperText('Città dove si svolge il ruolo'),
+
+                            Select::make('scene_nudo')
+                                ->label('Scene di Nudo')
+                                ->options([
+                                    'no' => 'No',
+                                    'parziale' => 'Parziale',
+                                    'si' => 'Sì',
+                                ])
+                                ->default('no')
+                                ->native(false)
+                                ->required()
+                                ->helperText('Specifica se sono previste scene di nudo'),
+
+TextInput::make('n')
+                                ->label('N. Attori')
+                                ->numeric()
+                                ->default(1)
+                                ->minValue(1)
+                                ->maxValue(100)
+                                ->required()
+                                ->helperText('Numero di attori richiesti'),
                         ]),
 
                         Textarea::make('description')
@@ -47,7 +75,7 @@ class RoleForm
                             ->label('Accetta Candidature')
                             ->default(true)
                             ->helperText('Se disattivato, il ruolo non accetterà nuove candidature')
-                    ->required(),
+                            ->required(),
                     ]),
 
                 Section::make('Requisiti')

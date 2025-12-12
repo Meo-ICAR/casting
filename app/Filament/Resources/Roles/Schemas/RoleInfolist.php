@@ -24,6 +24,14 @@ class RoleInfolist
                             ->size('lg')
                             ->weight('bold')
                             ->icon('heroicon-o-user-group'),
+                        TextEntry::make('city')
+                            ->label('Città')
+                            ->size('lg')
+                            ->weight('medium')
+                            ->icon('heroicon-o-map-pin')
+                            ->columnSpanFull()
+                            ->formatStateUsing(fn ($state) => $state ?: 'Non specificata')
+                            ->color('primary'),
 
                 IconEntry::make('is_open')
                             ->label('Stato')
@@ -41,30 +49,8 @@ class RoleInfolist
                             ->color('gray')
                             ->icon('heroicon-o-envelope'),
 
-                        TextEntry::make('salary_range')
-                            ->label('Compenso')
-                            ->getStateUsing(function ($record) {
-                                if ($record->salary_min && $record->salary_max) {
-                                    return '€' . number_format($record->salary_min, 0, ',', '.') . ' - €' . number_format($record->salary_max, 0, ',', '.');
-                                } elseif ($record->salary_min) {
-                                    return 'Da €' . number_format($record->salary_min, 0, ',', '.');
-                                } elseif ($record->salary_max) {
-                                    return 'Fino a €' . number_format($record->salary_max, 0, ',', '.');
-                                }
-                                return 'Non specificato';
-                            })
-                            ->placeholder('Non specificato')
-                            ->icon('heroicon-o-banknotes'),
 
-                TextEntry::make('created_at')
-                            ->label('Creato il')
-                            ->dateTime('d/m/Y H:i')
-                            ->icon('heroicon-o-clock'),
 
-                TextEntry::make('updated_at')
-                            ->label('Ultimo Aggiornamento')
-                            ->dateTime('d/m/Y H:i')
-                            ->icon('heroicon-o-clock'),
                     ])
                     ->columns(2),
 

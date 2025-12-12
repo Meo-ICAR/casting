@@ -416,11 +416,17 @@ class ProfileResource extends Resource
 
                         // Riga 3: Visibilità e Privacy
                         \Filament\Tables\Columns\Layout\Split::make([
+                            /*
                             \Filament\Tables\Columns\TextColumn::make('consenso_privacy')
                                 ->formatStateUsing(fn ($state) => $state ? '✅ Consenso Privacy' : '❌ Manca Consenso')
                                 ->color(fn ($state) => $state ? 'success' : 'danger')
                                 ->size('xs'),
-
+                             */
+                             \Filament\Tables\Columns\TextColumn::make('weight_kg')
+                                ->formatStateUsing(fn ($state) => $state . ' kg')
+                                ->icon('heroicon-s-scale')
+                                ->color('gray')
+                                ->size('sm'), // CORRETTO: Usa stringa 'sm'
                             \Filament\Tables\Columns\IconColumn::make('is_visible')
                                 ->boolean()
                                 ->label('Visibile')
@@ -428,32 +434,24 @@ class ProfileResource extends Resource
                         ]),
 
                         // Riga 4: Telefono con WhatsApp
-                        \Filament\Tables\Columns\Layout\Split::make([
-                            \Filament\Tables\Columns\TextColumn::make('phone')
-                                ->label('')
-                                ->formatStateUsing(fn ($state) => $state ?: 'Nessun telefono')
-                                ->color('gray')
-                                ->size('xs')
-                                ->icon('heroicon-o-phone')
-                                ->iconPosition('before'),
-
-                            \Filament\Tables\Columns\IconColumn::make('whatsapp_url')
-                                ->label('')
-                                ->icon('heroicon-o-phone-arrow-up-right')
-                                ->color('success')
-                                ->url(fn ($record) => $record->whatsapp_url, true)
-                                ->openUrlInNewTab()
-                                ->visible(fn ($record) => !empty($record->phone))
-                                ->tooltip('Apri WhatsApp')
-                                ->alignEnd(),
-                        ]),
+                          \Filament\Tables\Columns\Layout\Split::make([
+                        TextColumn::make('phone')
+                            ->label('WhatsApp')
+                            ->color('success')
+                            ->url(fn ($record) => $record->getWhatsappUrl('Ciao! Puoi ricontattarci?'))
+                            ->icon('heroicon-o-chat-bubble-oval-left-ellipsis')
+                            ->openUrlInNewTab()
+                            ]),
 
                         // Riga 5: Nome Utente (piccolo)
+                        /*
                         \Filament\Tables\Columns\TextColumn::make('user.name')
                             ->prefix('Utente: ')
                             ->color('gray')
                             ->size('xs'), // CORRETTO: Usa stringa 'xs'
-                    ])->space(2),
+                             */
+                    ]),
+
                 ])->extraAttributes(['class' => 'bg-white p-4 rounded-b-xl border-x border-b border-gray-200 dark:bg-gray-900 dark:border-gray-700']),
 
             ])->space(0)
@@ -524,9 +522,9 @@ class ProfileResource extends Resource
 
         // 4. AZIONI (INVARIATE)
         ->actions([
-                Actions\ViewAction::make(),
-                Actions\EditAction::make(),
-                Actions\DeleteAction::make(),
+            //    Actions\ViewAction::make(),
+            //    Actions\EditAction::make(),
+             //   Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Actions\BulkActionGroup::make([

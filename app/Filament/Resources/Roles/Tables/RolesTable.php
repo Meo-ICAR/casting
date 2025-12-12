@@ -30,20 +30,38 @@ class RolesTable
                     ->sortable()
                     ->weight('bold'),
 
-                TextColumn::make('salary_range')
-                    ->label('Compenso')
-                    ->getStateUsing(function ($record) {
-                        if ($record->salary_min && $record->salary_max) {
-                            return '€' . number_format($record->salary_min, 0, ',', '.') . ' - €' . number_format($record->salary_max, 0, ',', '.');
-                        } elseif ($record->salary_min) {
-                            return 'Da €' . number_format($record->salary_min, 0, ',', '.');
-                        } elseif ($record->salary_max) {
-                            return 'Fino a €' . number_format($record->salary_max, 0, ',', '.');
-                        }
-                        return 'Non specificato';
+                TextColumn::make('city')
+                    ->label('Città')
+                    ->searchable()
+                    ->sortable()
+                    ->placeholder('Non specificata')
+                    ->badge()
+                    ->color('gray'),
+
+                TextColumn::make('scene_nudo')
+                    ->label('Nudo')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'no' => 'No',
+                        'parziale' => 'Parziale',
+                        'si' => 'Sì',
+                        default => $state,
                     })
-                    ->placeholder('Non specificato')
-                    ->toggleable(),
+                    ->color(fn (string $state): string => match ($state) {
+                        'no' => 'success',
+                        'parziale' => 'warning',
+                        'si' => 'danger',
+                        default => 'gray',
+                    })
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('n')
+                    ->label('N.')
+                    ->badge()
+                    ->color('primary')
+                    ->sortable()
+                    ->alignCenter(),
 
                 TextColumn::make('applications_count')
                     ->label('Candidature')
@@ -84,17 +102,7 @@ class RolesTable
                     })
                     ->sortable(['start_date', 'end_date']),
 
-                TextColumn::make('created_at')
-                    ->label('Creato il')
-                    ->dateTime('d/m/Y')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('updated_at')
-                    ->label('Aggiornato il')
-                    ->dateTime('d/m/Y')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('project_id')
@@ -112,13 +120,13 @@ class RolesTable
                     ->native(false),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
+             //   ViewAction::make(),
+           //     EditAction::make(),
+              //  DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                   // DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('created_at', 'desc');

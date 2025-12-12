@@ -17,6 +17,8 @@ class Role extends Model
         'is_open'      => 'boolean',
         'start_date'   => 'date',
         'end_date'     => 'date',
+        'scene_nudo'   => 'string',
+        'n'            => 'integer',
     ];
 
     protected $fillable = [
@@ -29,6 +31,9 @@ class Role extends Model
         'is_open',
         'start_date',
         'end_date',
+        'city',
+        'scene_nudo',
+        'n',
     ];
 
     public function project(): BelongsTo

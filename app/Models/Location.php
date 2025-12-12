@@ -10,10 +10,12 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Models\User;
 use Spatie\Image\Manipulations;
+use App\Traits\HasWhatsapp; // <--- Importa il Trait
 
 class Location extends Model implements HasMedia
 {
     use SoftDeletes, InteractsWithMedia;
+    use HasWhatsapp; // <--- Attivalo qui
 
     /**
      * The attributes that are mass assignable.

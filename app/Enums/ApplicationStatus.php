@@ -4,6 +4,7 @@ namespace App\Enums;
 
 enum ApplicationStatus: string
 {
+    case DISPONIBILITA = 'disponibilita';
     case PENDING = 'pending';
     case UNDER_REVIEW = 'under_review';
     case CALLBACK = 'callback';
@@ -13,6 +14,7 @@ enum ApplicationStatus: string
     public function label(): string
     {
         return match($this) {
+            self::DISPONIBILITA => 'Disponibilità',
             self::PENDING => 'In attesa',
             self::UNDER_REVIEW => 'In valutazione',
             self::CALLBACK => 'Richiamato/a',

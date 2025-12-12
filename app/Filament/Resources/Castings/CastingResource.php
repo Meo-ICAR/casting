@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Castings;
 
 use App\Filament\Resources\Castings\Pages\ListCastings;
+use Illuminate\Database\Eloquent\Collection;
 use App\Models\Profile;
 use App\Models\Role;
 use Filament\Forms\Components\Select;
@@ -14,7 +15,17 @@ use BackedEnum;
 use UnitEnum;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\BulkAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\DeleteAction;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use App\Console\Commands\SendWhatsAppMessages;
+use Filament\Notifications\Notification;
 
 class CastingResource extends Resource
 {
@@ -24,7 +35,7 @@ class CastingResource extends Resource
     protected static ?string $modelLabel = 'Casting';
     protected static ?string $pluralModelLabel = 'Casting';
     protected static UnitEnum|string|null $navigationGroup = 'Produzione';
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 3;
 
     public static function table(Table $table): Table
     {
@@ -35,88 +46,148 @@ class CastingResource extends Resource
         $role->id => $role->name . ' - ' . ($role->project->title ?? 'Nessun progetto')
     ])
     ->toArray();
-        return $table
-            ->columns([
-                Tables\Columns\ImageColumn::make('profile_photo')
+
+    return $table
+  ->selectable()  // Abilita la selezione multipla
+
+        // 1. GRIGLIA RESPONSIVE
+        ->contentGrid([
+            'md' => 2,
+            'xl' => 3,
+            '2xl' => 4,
+        ])
+
+        // 2. LAYOUT CARD
+        ->columns([
+            \Filament\Tables\Columns\Layout\Stack::make([
+
+                // FOTO COPERTINA
+                \Filament\Tables\Columns\ImageColumn::make('profile_photo')
                     ->label('')
+                    // Usiamo la logica per prendere l'immagine convertita (thumb)
                     ->getStateUsing(fn ($record) => $record->getFirstMediaUrl('headshots', 'thumb'))
-                    ->circular()
-                    ->defaultImageUrl(url('/images/default-avatar.png')),
+                    ->height('250px')
+                    ->width('100%')
+                    ->extraImgAttributes(['class' => 'object-cover w-full rounded-t-xl']),
 
-                Tables\Columns\TextColumn::make('stage_name')
-                    ->label('Nome')
+                // PANNELLO DATI
+                \Filament\Tables\Columns\Layout\Panel::make([
+                    \Filament\Tables\Columns\Layout\Stack::make([
+
+                        // Riga 1: Nome (Grande) e Età (Badge)
+                        \Filament\Tables\Columns\Layout\Split::make([
+                            \Filament\Tables\Columns\TextColumn::make('stage_name')
+                                ->weight('bold') // Usa stringa semplice
+                                ->size('lg')     // CORRETTO: Usa stringa 'lg' invece della classe
+                                ->searchable(),
+
+                            \Filament\Tables\Columns\TextColumn::make('age')
+                                ->formatStateUsing(fn ($state) => $state . ' anni')
+                                ->badge()
+                                ->color('gray')
+                                ->alignEnd(),
+                        ]),
+
+                        // Riga 2: Altezza e Visibilità
+                        \Filament\Tables\Columns\Layout\Split::make([
+                            \Filament\Tables\Columns\TextColumn::make('height_cm')
+                                ->formatStateUsing(fn ($state) => $state . ' cm')
+                                ->icon('heroicon-m-arrows-up-down')
+                                ->color('gray')
+                                ->size('sm'), // CORRETTO: Usa stringa 'sm'
+
+                            \Filament\Tables\Columns\TextColumn::make('scene_nudo')
+                                ->badge()
+                                ->color(fn (string $state): string => match ($state) {
+                                    'no' => 'gray',
+                                    'parziale' => 'warning',
+                                    'si' => 'success',
+                                    default => 'gray',
+                                })
+                                ->formatStateUsing(fn (string $state): string => match ($state) {
+                                    'no' => 'No Nudo',
+                                    'parziale' => 'Nudo Parziale',
+                                    'si' => 'Nudo Completo',
+                                    default => $state,
+                                })
+                                ->alignEnd(),
+                        ]),
+
+
+
+                        // Riga 4: Telefono con WhatsApp
+                          \Filament\Tables\Columns\Layout\Split::make([
+                        \Filament\Tables\Columns\TextColumn::make('phone')
+                            ->label('WhatsApp')
+                            ->color('success')
+                            ->url(fn ($record) => $record->getWhatsappUrl('Ciao! Puoi ricontattarci?'))
+                            ->icon('heroicon-o-chat-bubble-oval-left-ellipsis')
+                            ->openUrlInNewTab()
+
+                      ]),
+                    ])->extraAttributes(['class' => 'bg-white p-4 rounded-b-xl border-x border-b border-gray-200 dark:bg-gray-900 dark:border-gray-700']),
+                ]),
+            ]),
+        ])
+
+ // 3. FILTRI
+            ->filters([
+                Tables\Filters\SelectFilter::make('role_requirements')
+                    ->label('Requisiti del Ruolo')
+                    ->options($roles)
                     ->searchable()
-                    ->sortable(),
+                    ->multiple()
+                    ->query(function (Builder $query, array $data) {
+                        if (empty($data['values'])) return $query;
 
-                Tables\Columns\TextColumn::make('age')
-                    ->label('Età')
-                    ->sortable()
-                    ->suffix(' anni'),
+                        return $query->where(function($mainQuery) use ($data) {
+                            foreach ($data['values'] as $roleId) {
+                                $role = Role::find($roleId);
+                                if (!$role) continue;
+                                $req = $role->requirements ?? [];
 
-                Tables\Columns\TextColumn::make('height_cm')
-                    ->label('Altezza')
-                    ->suffix(' cm')
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('phone')
-                    ->label('Telefono')
-                    ->searchable()
-                    ->url(fn ($record) => $record->whatsapp_url, true)
-                    ->icon('heroicon-o-phone')
-                    ->color('primary')
-                    ->visible(fn () => auth()->user()->can('viewPhone', Profile::class)),
-            ])
-           ->filters([
-            // Role requirements filter
-            Tables\Filters\SelectFilter::make('role_requirements')
-                ->label('Requisiti del Ruolo')
-                ->options($roles)
-                ->searchable()
-                ->multiple()
-                ->query(function (Builder $query, array $data) {
-                    if (empty($data['values'])) {
-                        return $query;
-                    }
-                    $roleIds = $data['values'];
-
-                    // This will filter profiles that match the role requirements
-                    return $query->where(function($q) use ($roleIds) {
-                        \Log::info('Filtering for role IDs:', $roleIds);
-                        foreach ($roleIds as $roleId) {
-                            $role = Role::with('project')->find($roleId);
-                             \Log::info('Processing role:', [
-            'role_id' => $role->id,
-            'role_name' => $role->name,
-            'project' => $role->project ? $role->project->title : null,
-            'gender_requirement' => $role->gender_requirement ?? 'not set'
-        ]);
-                            if ($role) {
-                                // Example: Filter by gender if specified in role
-                                if ($role->gender_requirement) {
-                                    $q->where('gender', $role->gender_requirement);
-                                }
-
-                                // Example: Filter by age range if specified in role
-                                if ($role->min_age) {
-                                    $q->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= ?', [$role->min_age]);
-                                }
-                                if ($role->max_age) {
-                                    $q->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) <= ?', [$role->max_age]);
-                                }
-
-                                // Add more role-based filters as needed
-                                // For example: height, skills, etc.
+                                $mainQuery->orWhere(function($q) use ($req) {
+                                    if (!empty($req['gender'])) $q->where('gender', $req['gender']);
+                                    if (!empty($req['age_min'])) $q->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= ?', [$req['age_min']]);
+                                    if (!empty($req['age_max'])) $q->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) <= ?', [$req['age_max']]);
+                                    if (!empty($req['height_min'])) $q->where('height_cm', '>=', $req['height_min']);
+                                    if (!empty($req['height_max'])) $q->where('height_cm', '<=', $req['height_max']);
+                                });
                             }
-                        }
-                    });
-                }),
+                        });
+                    }),
             ])
+// 4. AZIONI SINGOLE
             ->actions([
-            //    Tables\Actions\ViewAction::make(),
+               //  Tables\Actions\ViewAction::make(),
             ])
-            ->bulkActions([
-                // Add bulk actions if needed
-            ]);
+
+            // 5. AZIONI DI GRUPPO (BULK)
+              ->toolbarActions([
+                BulkActionGroup::make([
+                    BulkAction::make('whatsapp_bulk')
+                        ->label('Chiedi disponibilità')
+                        ->icon('heroicon-o-chat-bubble-left-right')
+                        ->color('success')
+                        ->action(function (Collection $records) {
+        $numbers = $records
+            ->filter(fn($record) => !empty($record->phone))
+            ->pluck('phone')
+            ->toArray();
+        if (empty($numbers)) {
+            Notification::make()
+                ->title('Nessun numero di telefono valido trovato')
+                ->danger()
+                ->send();
+            return;
+        }
+        SendWhatsAppMessages::sendToNumbers($numbers, 'Ciao! Ti contatto per il casting.');
+    })
+    ->deselectRecordsAfterCompletion()
+                ]),
+              ]);
+
+
     }
 
     public static function getRelations(): array
