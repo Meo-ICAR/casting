@@ -4,9 +4,8 @@ namespace App\Filament\Resources\ProjectServices\Schemas;
 
 use App\Models\ProjectService;
 use Filament\Forms\Components as Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -14,6 +13,7 @@ use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\KeyValue;
+use Filament\Schemas\Components\Section;
 
 
 class ProjectServiceForm
@@ -26,7 +26,7 @@ class ProjectServiceForm
                     ->schema([
                         Forms\Select::make('project_id')
                             ->label('Progetto')
-                            ->relationship('project', 'name')
+                            ->relationship('project', 'title')
                             ->searchable()
                             ->preload()
                             ->required(),

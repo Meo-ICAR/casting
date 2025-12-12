@@ -2,51 +2,46 @@
 
 namespace App\Filament\Resources\ProjectServices\Tables;
 
+use App\Models\ProjectService;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\TrashedFilter;
+use Filament\Tables\Filters\SelectFilter;
 
-class ProjectServicesTable
+class ProjectServiceTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-               Tables\Columns\TextColumn::make('project.name')
+               TextColumn::make('project.title')
                 ->label('Progetto')
                 ->sortable()
                 ->searchable(),
 
-            Tables\Columns\TextColumn::make('name')
+            TextColumn::make('name')
                 ->label('Nome')
                 ->searchable(),
 
-            Tables\Columns\TextColumn::make('serviceType.name')
+            TextColumn::make('serviceType.name')
                 ->label('Tipo servizio')
                 ->badge()
                 ->searchable(),
 
-            Tables\Columns\TextColumn::make('city')
+            TextColumn::make('city')
                 ->label('Città')
                 ->searchable(),
 
-            Tables\Columns\TextColumn::make('quantity')
+            TextColumn::make('quantity')
                 ->label('Q.tà')
                 ->numeric()
                 ->sortable(),
 
-            Tables\Columns\TextColumn::make('unit')
-                ->label('Unità')
-                ->formatStateUsing(fn (string $state): string => ProjectService::getUnitOptions()[$state] ?? $state),
-
-            Tables\Columns\TextColumn::make('estimated_cost')
-                ->label('Costo stimato')
-                ->money('EUR')
-                ->sortable(),
-
-            Tables\Columns\TextColumn::make('status')
+            TextColumn::make('status')
                 ->label('Stato')
                 ->badge()
                 ->color(fn (string $state): string => match ($state) {
@@ -58,29 +53,27 @@ class ProjectServicesTable
                     default => 'gray',
                 }),
 
-            Tables\Columns\TextColumn::make('needed_from')
+            TextColumn::make('needed_from')
                 ->label('Dal')
                 ->date()
                 ->sortable(),
         ])
         ->filters([
-            Tables\Filters\SelectFilter::make('status')
-                ->label('Stato')
-                ->options(ProjectService::getStatusOptions()),
-
-            Tables\Filters\SelectFilter::make('service_type_id')
+            SelectFilter::make('service_type_id')
                 ->label('Tipo servizio')
                 ->relationship('serviceType', 'name'),
         ])
         ->actions([
-            Tables\Actions\EditAction::make()
+            /*
+            EditAction::make()
                 ->label('Modifica'),
-            Tables\Actions\DeleteAction::make()
+            DeleteAction::make()
                 ->label('Elimina'),
+            */
         ])
         ->bulkActions([
-            Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make()
+            BulkActionGroup::make([
+                DeleteBulkAction::make()
                     ->label('Elimina selezionati'),
             ]),
         ])

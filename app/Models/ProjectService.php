@@ -13,9 +13,10 @@ class ProjectService extends Model
 
     protected $fillable = [
         'project_id',
+        'service_type_id',
         'name',
         'description',
-        'service_type',
+        'city',
         'quantity',
         'unit',
         'estimated_cost',
@@ -25,6 +26,14 @@ class ProjectService extends Model
         'notes',
         'specifications',
     ];
+
+    /**
+     * Get the service type that owns the project service.
+     */
+    public function serviceType(): BelongsTo
+    {
+        return $this->belongsTo(ServiceType::class);
+    }
 
     protected $casts = [
         'quantity' => 'integer',
@@ -41,13 +50,7 @@ class ProjectService extends Model
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_CANCELLED = 'cancelled';
 
-    // Service type constants (you can expand this based on your needs)
-    public const TYPE_CATERING = 'catering';
-    public const TYPE_EQUIPMENT = 'equipment';
-    public const TYPE_CREW = 'crew';
-    public const TYPE_VENUE = 'venue';
-    public const TYPE_TRANSPORT = 'transport';
-    public const TYPE_OTHER = 'other';
+    // Service type relationship will be handled by the ServiceType model
 
     // Unit options
     public const UNIT_HOUR = 'hour';

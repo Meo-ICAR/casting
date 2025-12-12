@@ -6,9 +6,10 @@ use App\Filament\Resources\ProjectServices\Pages\CreateProjectService;
 use App\Filament\Resources\ProjectServices\Pages\EditProjectService;
 use App\Filament\Resources\ProjectServices\Pages\ListProjectServices;
 use App\Filament\Resources\ProjectServices\Schemas\ProjectServiceForm;
-use App\Filament\Resources\ProjectServices\Tables\ProjectServicesTable;
+use App\Filament\Resources\ProjectServices\Tables\ProjectServiceTable;
 use App\Models\ProjectService;
 use BackedEnum;
+use UnitEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -31,7 +32,7 @@ class ProjectServiceResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return ProjectServicesTable::configure($table);
+        return ProjectServiceTable::configure($table);
     }
 
     public static function getRelations(): array
