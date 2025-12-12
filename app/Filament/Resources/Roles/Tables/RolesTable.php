@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Roles\Tables;
 
+use App\Filament\Resources\Applications\ApplicationResource;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -120,9 +122,14 @@ class RolesTable
                     ->native(false),
             ])
             ->recordActions([
-             //   ViewAction::make(),
-           //     EditAction::make(),
-              //  DeleteAction::make(),
+                Action::make('kanban')
+                    ->label('Vedi Candidature')
+                    ->icon('heroicon-o-view-columns')
+                    ->color('primary')
+                    ->url(fn ($record) => ApplicationResource::getUrl('kanban.role', ['role' => $record->id])),
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

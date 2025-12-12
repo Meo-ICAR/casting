@@ -25,4 +25,37 @@ class Application extends Model
     {
         return $this->belongsTo(Profile::class);
     }
+    /**
+     * Get the human-readable status label
+     */
+    public function getStatusLabel(): string
+    {
+        return $this->status->getLabel() ?? $this->status->value;
+    }
+    /**
+     * Get the color for the status badge
+     */
+    public function getStatusColor(): string
+    {
+        return match($this->status->value) {
+            'pending' => 'warning',
+            'accepted' => 'success',
+            'rejected' => 'danger',
+            default => 'gray',
+        };
+    }
+    /**
+     * Check if application has a specific status
+     */
+    public function hasStatus(string $status): bool
+    {
+        return $this->status->value === $status;
+    }
+    /**
+     * Scope to filter by status
+     */
+    public function scopeWithStatus($query, string $status)
+    {
+        return $query->where('status', $status);
+    }
 }

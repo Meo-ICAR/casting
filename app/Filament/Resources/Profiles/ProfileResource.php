@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Profiles;
 
 use App\Filament\Resources\Profiles\Pages;
+//use App\Filament\Resources\ProfileRoles\Pages;
 use App\Models\Profile;
 use Filament\Forms;
 use Filament\Resources\Resource;
@@ -532,128 +533,12 @@ class ProfileResource extends Resource
                 ]),
             ])
             ->emptyStateActions([
-                Actions\CreateAction::make(),
+              //  Actions\CreateAction::make(),
             ])
             ->striped(false)
             ->defaultSort('created_at', 'desc');
     }
 
-/*
-    public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                ImageColumn::make('profile_photo')
-                    ->label('')
-                    ->getStateUsing(fn ($record) => $record->getFirstMediaUrl('headshots', 'thumb'))
-                    ->circular()
-                    ->defaultImageUrl(url('/images/default-avatar.png')),
-
-                TextColumn::make('user.name')
-                    ->label('Nome')
-                    ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('stage_name')
-                    ->label('Nome d\'Arte')
-                    ->searchable(),
-
-                TextColumn::make('age')
-                    ->label('Età')
-                    ->sortable()
-                    ->suffix(' anni'),
-
-                TextColumn::make('height_cm')
-                    ->label('Altezza')
-                    ->suffix(' cm')
-                    ->sortable(),
-
-                IconColumn::make('is_visible')
-                    ->label('Visibile')
-                    ->boolean()
-                    ->sortable(),
-
-                TextColumn::make('created_at')
-                    ->label('Creato il')
-                    ->dateTime('d/m/Y')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                SelectFilter::make('gender')
-                    ->label('Genere')
-                    ->options([
-                        'male' => 'Uomo',
-                        'female' => 'Donna',
-                        'non_binary' => 'Non-Binary',
-                    ]),
-
-                Filter::make('age_range')
-                    ->form([
-                        TextInput::make('min_age')
-                            ->label('Età minima')
-                            ->numeric()
-                            ->minValue(0)
-                            ->maxValue(100),
-                        TextInput::make('max_age')
-                            ->label('Età massima')
-                            ->numeric()
-                            ->minValue(0)
-                            ->maxValue(100),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['min_age'],
-                                fn (Builder $query, $minAge): Builder => $query->where('birth_date', '<=', now()->subYears($minAge)),
-                            )
-                            ->when(
-                                $data['max_age'],
-                                fn (Builder $query, $maxAge): Builder => $query->where('birth_date', '>=', now()->subYears($maxAge + 1)),
-                            );
-                    }),
-
-                Filter::make('height_range')
-                    ->form([
-                        TextInput::make('min_height')
-                            ->label('Altezza minima (cm)')
-                            ->numeric()
-                            ->minValue(50)
-                            ->maxValue(250),
-                        TextInput::make('max_height')
-                            ->label('Altezza massima (cm)')
-                            ->numeric()
-                            ->minValue(50)
-                            ->maxValue(250),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['min_height'],
-                                fn (Builder $query, $minHeight): Builder => $query->where('height_cm', '>=', $minHeight),
-                            )
-                            ->when(
-                                $data['max_height'],
-                                fn (Builder $query, $maxHeight): Builder => $query->where('height_cm', '<=', $maxHeight),
-                            );
-                    }),
-            ])
-            ->actions([
-                Actions\ViewAction::make(),
-                Actions\EditAction::make(),
-                Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Actions\BulkActionGroup::make([
-                    Actions\DeleteBulkAction::make(),
-                ]),
-            ])
-            ->emptyStateActions([
-                Actions\CreateAction::make(),
-            ])
-            ->defaultSort('created_at', 'desc');
-    }
-*/
     public static function getRelations(): array
     {
         return [
@@ -669,6 +554,8 @@ class ProfileResource extends Resource
             'create' => Pages\CreateProfile::route('/create'),
             'view' => Pages\ViewProfile::route('/{record}'),
             'edit' => Pages\EditProfile::route('/{record}/edit'),
+            'roles' => \App\Filament\Resources\Profiles\ProfileResource\Pages\ProfileRoles::route('/{record}/roles'),
+
         ];
     }
 

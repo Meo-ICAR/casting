@@ -36,3 +36,9 @@ Route::post('/logout', function () {
     request()->session()->regenerateToken();
     return redirect('/');
 })->name('logout');
+
+Route::get('/profile/{profile}/roles', function (App\Models\Profile $profile) {
+    return app(\App\Filament\Resources\ProfileResource\Pages\ProfileRoles::class, [
+        'record' => $profile->id
+    ])->render();
+})->name('profile.roles');

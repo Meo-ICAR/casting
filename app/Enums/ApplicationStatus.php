@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Enums;
+use Filament\Support\Contracts\HasLabel;
 
-enum ApplicationStatus: string
+
+enum ApplicationStatus: string implements HasLabel
 {
     case DISPONIBILITA = 'disponibilita';
     case PENDING = 'pending';
@@ -11,7 +13,7 @@ enum ApplicationStatus: string
     case REJECTED = 'rejected';
     case ACCEPTED = 'accepted';
 
-    public function label(): string
+      public function getLabel(): string
     {
         return match($this) {
             self::DISPONIBILITA => 'Disponibilità',

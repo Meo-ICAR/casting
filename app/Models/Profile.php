@@ -137,21 +137,51 @@ class Profile extends Model implements HasMedia // <--- 1. Implementa l'interfac
         return Carbon::parse($this->birth_date)->age;
     }
 
-    // Accessor per ottenere l'URL di WhatsApp
-    public function getWhatsappUrlAttribute(): ?string
-    {
-        if (empty($this->phone)) {
-            return null;
-        }
-
-        // Rimuovi spazi e caratteri speciali dal numero
-        $phone = preg_replace('/[^0-9]/', '', $this->phone);
-
-        // Aggiungi il prefisso internazionale se mancante
-        if (!str_starts_with($phone, '+')) {
-            $phone = '39' . ltrim($phone, '0'); // 39 è il prefisso italiano
-        }
-
-        return 'https://wa.me/' . $phone;
-    }
+public function applications()
+{
+    return $this->hasMany(Application::class);
 }
+public function getMatchingRolesQuery()
+{
+    return Role::query()
+        ->where('is_open', true)
+        ->where(function($query) {
+            // Filter by gender if specified in role requirements
+            $query->whereNull('requirements->gender')
+                 ->orWhere('requirements->gender', $this->gender);
+        })
+        ->where(function($query) {
+            // Filter by age range if specified
+            if (isset($this->appearance['age_range'])) {
+                $age = $this->age;
+                $query->where(function($q) use ($age) {
+                    $q->whereNull('requirements->age_min')
+                      ->orWhere('requirements->age_min', '<=', $age);
+                })->where(function($q) use ($age) {
+                    $q->whereNull('requirements->age_max')
+                      ->orWhere('requirements->age_max', '>=', $age);
+                });
+            }
+        })
+        ->where(function($query) {
+            // Filter by scene_nudo if specified in profile
+            if (isset($this->scene_nudo) && $this->scene_nudo === 'no') {
+                $query->where('scene_nudo', '!=', 'si');
+            }
+        })
+        /*
+        ->whereNotIn('id', function($query) {
+            // Exclude roles the profile has already applied to
+            $query->select('role_id')
+                  ->from('applications')
+                  ->where('profile_id', $this->id);
+        })
+                  */
+        ;
+}
+public function getMatchingRolesAttribute()
+{
+    return $this->getMatchingRolesQuery()->get();
+}
+
+    }

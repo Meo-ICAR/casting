@@ -15,6 +15,10 @@ class ViewProfile extends ViewRecord
         return [
             Actions\EditAction::make(),
             Actions\DeleteAction::make(),
+            Action::make('view_roles')
+            ->label('Ruoli disponibili')
+            ->url(fn ($record) => static::getUrl('roles', ['record' => $record]))
+            ->icon('heroicon-o-user-group'),
         ];
     }
 

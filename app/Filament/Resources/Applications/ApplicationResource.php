@@ -60,9 +60,26 @@ class ApplicationResource extends Resource
     {
         return [
             'index' => ListApplications::route('/'),
+            'kanban' => \App\Filament\Resources\Applications\Pages\ApplicationsKanban::route('/kanban'),
+            'kanban.role' => \App\Filament\Resources\Applications\Pages\ApplicationsKanban::route('/kanban/{role}'),
             'create' => CreateApplication::route('/create'),
             'view' => ViewApplication::route('/{record}'),
             'edit' => EditApplication::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationItems(): array
+    {
+        $items = parent::getNavigationItems();
+
+        // Add Kanban view as a sub-item
+        $items[] = \Filament\Navigation\NavigationItem::make('kanban')
+            ->label('Vista Kanban')
+            ->icon('heroicon-o-view-columns')
+            ->group('Produzione')
+            ->sort(4.5)
+            ->url(static::getUrl('kanban'));
+
+        return $items;
     }
 }

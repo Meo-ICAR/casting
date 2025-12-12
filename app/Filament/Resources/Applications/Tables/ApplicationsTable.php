@@ -57,7 +57,7 @@ class ApplicationsTable
                 TextColumn::make('status')
                     ->label('Stato')
                     ->badge()
-                    ->formatStateUsing(fn ($state) => ($state instanceof ApplicationStatus ? $state : ApplicationStatus::from($state))->label())
+                    ->formatStateUsing(fn ($state) => ($state instanceof ApplicationStatus ? $state : ApplicationStatus::from($state))->getLabel())
                     ->color(fn ($state) => match($state instanceof ApplicationStatus ? $state : ApplicationStatus::from($state)) {
                         ApplicationStatus::PENDING => 'gray',
                         ApplicationStatus::UNDER_REVIEW => 'info',
@@ -90,11 +90,12 @@ class ApplicationsTable
                 SelectFilter::make('status')
                     ->label('Stato')
                     ->options([
-                        ApplicationStatus::PENDING->value => ApplicationStatus::PENDING->label(),
-                        ApplicationStatus::UNDER_REVIEW->value => ApplicationStatus::UNDER_REVIEW->label(),
-                        ApplicationStatus::CALLBACK->value => ApplicationStatus::CALLBACK->label(),
-                        ApplicationStatus::ACCEPTED->value => ApplicationStatus::ACCEPTED->label(),
-                        ApplicationStatus::REJECTED->value => ApplicationStatus::REJECTED->label(),
+                        ApplicationStatus::DISPONIBILITA->value => ApplicationStatus::DISPONIBILITA->getLabel(),
+                        ApplicationStatus::PENDING->value => ApplicationStatus::PENDING->getLabel(),
+                        ApplicationStatus::UNDER_REVIEW->value => ApplicationStatus::UNDER_REVIEW->getLabel(),
+                        ApplicationStatus::CALLBACK->value => ApplicationStatus::CALLBACK->getLabel(),
+                        ApplicationStatus::ACCEPTED->value => ApplicationStatus::ACCEPTED->getLabel(),
+                        ApplicationStatus::REJECTED->value => ApplicationStatus::REJECTED->getLabel(),
                     ])
                     ->multiple(),
 
@@ -111,9 +112,9 @@ class ApplicationsTable
                     ->preload(),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
+              //  ViewAction::make(),
+              //  EditAction::make(),
+              //  DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
