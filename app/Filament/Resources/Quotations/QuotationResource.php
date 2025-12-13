@@ -4,7 +4,9 @@ namespace App\Filament\Resources\Quotations;
 
 use App\Filament\Resources\Quotations\Pages\CreateQuotation;
 use App\Filament\Resources\Quotations\Pages\EditQuotation;
+use App\Filament\Resources\Quotations\Pages\FillQuotation;
 use App\Filament\Resources\Quotations\Pages\ListQuotations;
+use App\Filament\Resources\Quotations\Schemas\FillQuotationForm;
 use App\Filament\Resources\Quotations\Schemas\QuotationForm;
 use App\Filament\Resources\Quotations\Tables\QuotationsTable;
 use App\Models\Project;
@@ -33,6 +35,9 @@ class QuotationResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
+        if (request()->routeIs('filament.admin.resources.quotations.fill')) {
+            return FillQuotationForm::configure($schema);
+        }
         return QuotationForm::configure($schema);
     }
 
@@ -60,6 +65,7 @@ class QuotationResource extends Resource
             'index' => ListQuotations::route('/'),
             'create' => CreateQuotation::route('/create'),
             'edit' => EditQuotation::route('/{record}/edit'),
+            'fill' => FillQuotation::route('/{record}/fill'),
         ];
     }
     /*

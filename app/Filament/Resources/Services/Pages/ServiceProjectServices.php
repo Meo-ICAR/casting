@@ -14,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Actions\Action;
 
 class ServiceProjectServices extends ListRecords
 {
@@ -41,16 +42,28 @@ public function mount($record = null): void
             ->query(
                 ProjectService::query()
                     ->where('service_type_id', $this->record->service_type_id)
-                    ->with(['project', 'quotations'])
+
+                    ->with(['project',  'quotations' => function ($query) {
+                        $query->where('service_id', $this->record->id);
+                    }])
+
             )
             ->columns([
                 Tables\Columns\TextColumn::make('project.title')
                     ->label('Progetto')
                     ->searchable()
                     ->sortable(),
+ Tables\Columns\TextColumn::make('quantity')
 
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Servizio')
+                    ->label('N.')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('needed_from')
+                    ->label('Dal')
+                    ->searchable()
+                    ->sortable(),
+                 Tables\Columns\TextColumn::make('needed_until')
+                    ->label('Al')
                     ->searchable()
                     ->sortable(),
 
@@ -59,18 +72,12 @@ public function mount($record = null): void
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('status')
-                    ->label('Stato')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'draft' => 'gray',
-                        'in_progress' => 'warning',
-                        'completed' => 'success',
-                        default => 'gray',
-                    }),
-
+                Tables\Columns\TextColumn::make('quotations.proposed_price')
+                    ->label('Preventivo')
+                    ->numeric()
+                    ->prefix('€'),
                 Tables\Columns\TextColumn::make('quotations.status')
-                    ->label('Stato Preventivo')
+                    ->label('Stato')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'proposta' => 'info',
@@ -86,7 +93,24 @@ public function mount($record = null): void
                 // Add any filters you need
             ])
             ->actions([
-                // Add any actions you need
+                Action::make('create_quotation')
+                    ->label('Nuovo Preventivo')
+                    ->hidden(fn (ProjectService $record): bool => $record->quotations->isNotEmpty())
+                    ->action(function (ProjectService $record) {
+                        // Create a new quotation for this project service
+                        $quotation = Quotation::create([
+                            'project_service_id' => $record->id,
+                            'service_id' => $resource->id,
+                            'status' => Quotation::STATUS_PROPOSAL,
+                            'proposed_price' => 0.00,
+                        ]);
+
+                        // Redirect to fill the newly created quotation
+                        return redirect(QuotationResource::getUrl('fill', ['record' => $quotation]));
+                    })
+                    ->icon('heroicon-o-document-plus')
+                    ->button()
+                    ->color('primary'),
             ])
             ->bulkActions([
                 // Add any bulk actions you need
@@ -95,11 +119,11 @@ public function mount($record = null): void
 
     public function getTitle(): string
     {
-        return "Servizi per: {$this->record->name}";
+        return "Richiesta offerte per: {$this->record->name}";
     }
 
     public function getBreadcrumb(): string
     {
-        return 'Servizi Progetto';
+        return 'Preventivazione';
     }
 }

@@ -159,4 +159,9 @@ class ProjectService extends Model
     {
         return $query->where('service_type', $type);
     }
+
+    public function quotations()
+{
+    return $this->hasMany(\App\Models\Quotation::class, 'project_service_id');
+}
 }

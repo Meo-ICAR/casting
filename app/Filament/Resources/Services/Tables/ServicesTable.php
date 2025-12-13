@@ -7,14 +7,18 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use App\Models\ServiceType;
+use App\Filament\Resources\Services\ServiceResource;
 
 class ServicesTable
 {
+    protected static string $resource = ServiceResource::class;
+
     public static function configure(Table $table): Table
     {
         return $table
@@ -100,6 +104,12 @@ class ServicesTable
             ])
 
             ->recordActions([
+                 Action::make('projectServices')
+                ->label('Richieste')
+                ->icon('heroicon-o-document-chart-bar')
+                   ->color('successs')
+                 ->url(fn ($record) => static::$resource::getUrl('project-services', ['record' => $record])),
+
                 /*
              Tables\Actions\Action::make('projectServices')
                 ->label('Vedi Progetti')

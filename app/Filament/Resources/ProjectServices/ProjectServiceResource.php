@@ -21,7 +21,7 @@ class ProjectServiceResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
     protected static ?string $navigationLabel = 'Servizio';
     protected static ?string $modelLabel = 'Servizio';
-    protected static ?string $pluralModelLabel = 'Servizi';
+    protected static ?string $pluralModelLabel = 'Servizi richiesti';
     protected static UnitEnum|string|null $navigationGroup = 'Produzione';
     protected static ?int $navigationSort = 4;
 
