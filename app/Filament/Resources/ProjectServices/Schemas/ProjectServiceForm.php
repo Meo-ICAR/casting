@@ -77,8 +77,10 @@ class ProjectServiceForm
                             ->native(false),
 
                         Forms\TextInput::make('estimated_cost')
-                            ->label('Costo stimato')
+                            ->label('Budget previsto (€)')
                             ->numeric()
+                            ->step(10)
+                            ->minValue(0)
                             ->prefix('€'),
 
                         Forms\Select::make('status')

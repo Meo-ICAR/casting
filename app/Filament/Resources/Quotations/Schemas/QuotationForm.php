@@ -35,53 +35,68 @@ class QuotationForm
             $q->whereIn('status', ['casting', 'production']);
         })
     )
-    ->getOptionLabelFromRecordUsing(fn (ProjectService $record) =>
-        "{$record->project->title} - {$record->name} ({$record->serviceType?->name})"
-    )
-    ->searchable(['name', 'project.title'])
+      ->getOptionLabelFromRecordUsing(fn (ProjectService $record) =>
+            "{$record->project->title} - {$record->name} ({$record->serviceType?->name})" .
+            ($record->city ? " - {$record->city}" : "")
+        )
+    ->searchable(['name', 'project.title', 'city'])
     ->preload()
     ->required()
     ->live()
-    ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
-        if ($projectService = ProjectService::with('serviceType')->find($state)) {
-            $set('service_id', $projectService->service_type_id);
-            $set('proposed_price', $projectService->estimated_cost);
-        }
-    })
-    ->columnSpan(1),
+ ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
+            if ($projectService = ProjectService::with('serviceType')->find($state)) {
+                $set('service_id', $projectService->service_type_id);
+                $set('proposed_price', $projectService->estimated_cost);
+                // Update city display when project service changes
+                $set('project_service_city', $projectService->city);
+            }
+        }),
+
+
 // Service Select - Now filtered by service type
 Select::make('service_id')
     ->label('Servizio')
     ->relationship(
         name: 'service',
         titleAttribute: 'name',
-        modifyQueryUsing: function (Builder $query, Get $get) {
-            $projectServiceId = $get('project_service_id');
+         modifyQueryUsing: function (Builder $query, Get $get) {
+                                    $projectServiceId = $get('project_service_id');
+                                    $quotationId = $get('id');
 
-            if ($projectServiceId) {
-                $projectService = ProjectService::find($projectServiceId);
-                if ($projectService && $projectService->service_type_id) {
-                    return $query->where('services.service_type_id', $projectService->service_type_id);
-                }
-            }
+                                    // If we have a project service, filter by its service type
+                                    if ($projectServiceId) {
+                                        $projectService = ProjectService::with('serviceType')->find($projectServiceId);
+                                        if ($projectService?->service_type_id) {
+                                            return $query->where('services.service_type_id', $projectService->service_type_id);
+                                        }
+                                    }
 
-            return $query;
-        }
-    )
-    ->searchable()
-    ->preload()
-    ->required()
-    ->columnSpan(1)
-    ->live(),
-// Keep the hidden field for backward compatibility
-Hidden::make('service_id')
-    ->afterStateHydrated(function (callable $set, $state, $get) {
-        if (!$state && $projectServiceId = $get('project_service_id')) {
-            if ($projectService = ProjectService::find($projectServiceId)) {
-                $set('service_id', $projectService->service_type_id);
+                                    // If editing, make sure to include the current service
+                                    if ($quotationId) {
+                                        $quotation = Quotation::find($quotationId);
+                                        if ($quotation?->service_id) {
+                                            $query->orWhere('id', $quotation->service_id);
+                                        }
+                                    }
+
+     return $query;
+                                }
+                            )
+                           ->getOptionLabelFromRecordUsing(fn (Service $record) =>
+            "{$record->name}" .
+            ($record->city ? " - {$record->city}" : "")
+        )
+        ->searchable(['name', 'city'])
+                            ->preload()
+                            ->required()
+                            ->live()
+                            ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
+            // Update service city display when service changes
+            if ($service = Service::find($state)) {
+                $set('service_city', $service->city);
             }
-        }
-    }),
+        }),
+
                         Select::make('status')
                             ->label('Stato')
                             ->options(Quotation::getStatuses())

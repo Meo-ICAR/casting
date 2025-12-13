@@ -98,16 +98,27 @@ class ServicesTable
                     ->multiple()
                     ->searchable(),
             ])
+
             ->recordActions([
+                /*
+             Tables\Actions\Action::make('projectServices')
+                ->label('Vedi Progetti')
+                ->icon('heroicon-o-document-chart-bar')
+                ->url(fn (Service $record): string => static::getUrl('project-services', ['record' => $record])),
+            // ... other actions
                 ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make(),
+                */
             ])
+            /*
             ->toolbarActions([
+
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('created_at', 'desc');
+                */
+            ->defaultSort('name', 'desc');
     }
 }

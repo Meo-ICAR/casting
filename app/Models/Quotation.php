@@ -74,6 +74,7 @@ class Quotation extends Model
      */
     public function service()
     {
+        /*
         return $this->hasOneThrough(
             Service::class,
             ProjectService::class,
@@ -81,7 +82,10 @@ class Quotation extends Model
             'id', // Foreign key on services table
             'project_service_id', // Local key on quotations table
             'service_type_id' // Local key on project_services table
-        );
+            );
+        */
+             return $this->belongsTo(Service::class);
+        //
     }
 
     public function getStatusColorAttribute(): string

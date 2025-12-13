@@ -11,6 +11,7 @@ use App\Filament\Resources\Services\Schemas\ServiceInfolist;
 use App\Filament\Resources\Services\Tables\ServicesTable;
 use App\Models\Service;
 use App\Models\ServiceType;
+use App\Filament\Resources\Services\Pages\ServiceProjectServices;
 use BackedEnum;
 use UnitEnum;
 use Filament\Resources\Resource;
@@ -47,8 +48,9 @@ class ServiceResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+        //     \App\Filament\Resources\ServiceResource\RelationManagers\ProjectServicesRelationManager::class,
         ];
+
     }
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
@@ -64,6 +66,14 @@ class ServiceResource extends Resource
             'create' => CreateService::route('/create'),
             'view' => ViewService::route('/{record}'),
             'edit' => EditService::route('/{record}/edit'),
+      'project-services' => ServiceProjectServices::route('/{record}/project-services'),
+
+
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }
