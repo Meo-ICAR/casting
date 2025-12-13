@@ -5,44 +5,47 @@ namespace App\Filament\Resources\ProjectLocations\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Actions\ViewAction;
+use Filament\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class ProjectLocationsTable
 {
-    public static function configure(Table $table): Table
+   public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-            Tables\Columns\TextColumn::make('project.name')
+            TextColumn::make('project.title')
                 ->label('Progetto')
                 ->sortable()
                 ->searchable(),
 
-            Tables\Columns\TextColumn::make('name')
+            TextColumn::make('name')
                 ->label('Nome')
                 ->searchable()
                 ->sortable(),
 
-            Tables\Columns\TextColumn::make('city')
+            TextColumn::make('city')
                 ->label('Città')
                 ->searchable()
                 ->sortable(),
 
-            Tables\Columns\TextColumn::make('location_type')
+            TextColumn::make('location_type')
                 ->label('Tipologia')
                 ->badge()
                 ->formatStateUsing(fn (string $state): string => ProjectLocation::getLocationTypeOptions()[$state] ?? $state)
                 ->searchable()
                 ->sortable(),
 
-            Tables\Columns\TextColumn::make('shooting_date')
+            TextColumn::make('shooting_date')
                 ->label('Data riprese')
                 ->date()
                 ->sortable(),
 
-            Tables\Columns\TextColumn::make('status')
+            TextColumn::make('status')
                 ->label('Stato')
                 ->badge()
                 ->color(fn (string $state): string => match ($state) {
@@ -55,7 +58,7 @@ class ProjectLocationsTable
                 })
                 ->sortable(),
 
-            Tables\Columns\IconColumn::make('permission_required')
+            IconColumn::make('permission_required')
                 ->label('Autorizzazione')
                 ->boolean()
                 ->sortable(),

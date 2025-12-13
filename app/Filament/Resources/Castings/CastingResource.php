@@ -35,7 +35,7 @@ class CastingResource extends Resource
     protected static ?string $modelLabel = 'Casting';
     protected static ?string $pluralModelLabel = 'Casting';
     protected static UnitEnum|string|null $navigationGroup = 'Produzione';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 6;
 
     public static function table(Table $table): Table
     {
