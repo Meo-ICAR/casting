@@ -47,7 +47,7 @@ class ProjectResource extends Resource
     {
         return [
             RelationManagers\RolesRelationManager::class,
-            RelationManagers\QuotationsRelationManager::class,
+            RelationManagers\ProjectSeriviceRelationManager::class,
         ];
     }
 

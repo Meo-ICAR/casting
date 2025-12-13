@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\UserRole;
 
 class User extends Authenticatable // implements FilamentUser (se vuoi restringere l'accesso)
 {
@@ -20,6 +21,7 @@ class User extends Authenticatable // implements FilamentUser (se vuoi restringe
 
     protected $casts = [
         'password' => 'hashed',
+        'role' => UserRole::class,
     ];
 
     // --- Relazioni ---
@@ -45,8 +47,22 @@ class User extends Authenticatable // implements FilamentUser (se vuoi restringe
 
     // --- Helper ---
 
-    public function isDirector(): bool
-    {
-        return $this->role === 'director' || $this->role === 'admin';
-    }
+    // Add these helper methods
+public function isAdmin(): bool
+{
+    return $this->role === UserRole::ADMIN;
+}
+public function isHost(): bool
+{
+    return $this->role === UserRole::HOST || $this->isAdmin();
+}
+public function isServicer(): bool
+{
+    return $this->role === UserRole::SERVICER || $this->isAdmin();
+}
+// Update existing role check methods to use the enum
+public function isDirector(): bool
+{
+    return $this->role === UserRole::DIRECTOR || $this->isAdmin();
+}
 }

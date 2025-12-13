@@ -14,6 +14,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\KeyValue;
 use Filament\Schemas\Components\Section;
+use Filament\Tables\Enums\ActionsPosition;
 
 
 class ProjectServiceForm
@@ -83,12 +84,17 @@ class ProjectServiceForm
                             ->minValue(0)
                             ->prefix('€'),
 
+                        Forms\Toggle::make('is_open')
+                            ->label('Aperto')
+                            ->default(true),
+
                         Forms\Select::make('status')
                             ->label('Stato')
                             ->options(ProjectService::getStatusOptions())
                             ->required()
                             ->default(ProjectService::STATUS_PENDING),
-                    ])->columns(2),
+                    ]),
+
 
                 Section::make('Tempi')
                     ->schema([

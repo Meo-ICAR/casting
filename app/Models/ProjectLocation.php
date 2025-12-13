@@ -29,6 +29,7 @@ class ProjectLocation extends Model
         'permission_details',
         'notes',
         'specifications',
+         'is_open',
     ];
 
     protected $casts = [

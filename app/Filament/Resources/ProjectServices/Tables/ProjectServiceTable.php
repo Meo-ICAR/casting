@@ -11,6 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Columns\IconColumn;
 
 class ProjectServiceTable
 {
@@ -52,6 +53,13 @@ class ProjectServiceTable
                     ProjectService::STATUS_CANCELLED => 'danger',
                     default => 'gray',
                 }),
+                IconColumn::make('is_open')
+    ->label('Stato')
+    ->boolean()
+    ->trueIcon('heroicon-o-check-circle')
+    ->falseIcon('heroicon-o-x-circle')
+    ->trueColor('success')
+    ->falseColor('danger'),
 
             TextColumn::make('needed_from')
                 ->label('Dal')

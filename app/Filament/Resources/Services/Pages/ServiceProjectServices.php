@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Services\Pages;
 
 use App\Filament\Resources\Quotations\QuotationResource;
 use App\Filament\Resources\Services\ServiceResource;
+use App\Filament\Resources\Services\Pages\EditService;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use App\Models\ProjectService;
@@ -15,6 +16,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Actions\Action;
+use Filament\Actions\EditAction;
 
 class ServiceProjectServices extends ListRecords
 {
@@ -119,11 +121,23 @@ public function mount($record = null): void
 
     public function getTitle(): string
     {
-        return "Richiesta offerte per: {$this->record->name}";
+        return "Elenco richieste di preventivo per: {$this->record->name}";
     }
 
     public function getBreadcrumb(): string
     {
         return 'Preventivazione';
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+        \Filament\Actions\Action::make('editService')
+            ->label('Modifica')
+            ->icon('heroicon-o-pencil-square')
+              ->url(fn () => \App\Filament\Resources\Services\ServiceResource::getUrl('edit', ['record' => $this->record->id]))
+
+           ->color('primary'),
+    ];
     }
 }

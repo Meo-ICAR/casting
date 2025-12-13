@@ -12,6 +12,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
+
 class ProjectLocationsTable
 {
    public static function configure(Table $table): Table
@@ -57,6 +58,13 @@ class ProjectLocationsTable
                     default => 'gray',
                 })
                 ->sortable(),
+                Tables\Columns\IconColumn::make('is_open')
+    ->label('Stato')
+    ->boolean()
+    ->trueIcon('heroicon-o-check-circle')
+    ->falseIcon('heroicon-o-x-circle')
+    ->trueColor('success')
+    ->falseColor('danger'),
 
             IconColumn::make('permission_required')
                 ->label('Autorizzazione')
@@ -67,6 +75,7 @@ class ProjectLocationsTable
             Tables\Filters\SelectFilter::make('status')
                 ->label('Stato')
                 ->options(ProjectLocation::getStatusOptions()),
+
 
             Tables\Filters\SelectFilter::make('location_type')
                 ->label('Tipologia')

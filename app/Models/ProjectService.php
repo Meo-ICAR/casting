@@ -25,6 +25,7 @@ class ProjectService extends Model
         'needed_until',
         'notes',
         'specifications',
+         'is_open',
     ];
 
     /**

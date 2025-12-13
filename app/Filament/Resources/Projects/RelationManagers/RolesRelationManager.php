@@ -14,6 +14,11 @@ use Filament\Tables\Table;
 class RolesRelationManager extends RelationManager
 {
     protected static string $relationship = 'roles';
+    protected static ?string $navigationLabel = 'Ruoli';
+    protected static ?string $modelLabel = 'Ruolo';
+    protected static ?string $pluralModelLabel = 'Ruoli';
+    protected static UnitEnum|string|null $navigationGroup = 'Produzione';
+    protected static ?int $navigationSort = 2;
 
     public function table(Table $table): Table
     {

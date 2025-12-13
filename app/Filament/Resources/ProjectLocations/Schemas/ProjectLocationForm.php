@@ -105,6 +105,10 @@ class ProjectLocationForm
                         ->default(ProjectLocation::STATUS_PENDING)
                         ->required()
                         ->native(false),
+                        Forms\Toggle::make('is_open')
+    ->label('Aperto')
+    ->default(true)
+    ->columnSpan(1),
 
                     Forms\Components\Toggle::make('permission_required')
                         ->label('Richiesta autorizzazione')

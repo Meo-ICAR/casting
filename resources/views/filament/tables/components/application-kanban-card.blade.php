@@ -1,12 +1,3 @@
-<?php
-@props([
-    'record',
-    'viewAction',
-    'editAction',
-    'deleteAction',
-])
-?>
-
 <div class="bg-white rounded-lg shadow overflow-hidden border border-gray-200 hover:shadow-md transition-shadow duration-200">
     <!-- Card Header -->
     <div class="p-4 border-b border-gray-100">
