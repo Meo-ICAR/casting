@@ -49,6 +49,18 @@ class ApplicationsKanban extends ListRecords
         parent::mount();
     }
 
+    // Definisci gli stati (colonne) della tua board
+    protected static array $statuses = [
+        'disponibilita' => 'In Attesa',
+        'pending' => 'In Corso',
+        'under_review' => 'Completato',
+    ];
+
+    // Restituisci il campo del modello che contiene lo stato
+    protected function statuses(): array
+    {
+        return static::$statuses;
+    }
 
     protected function getTableQuery(): Builder
     {
@@ -100,6 +112,41 @@ class ApplicationsKanban extends ListRecords
                 ->color('gray'),
         ];
     }
+
+    protected function getViewData(): array
+{
+    $statuses = [
+        'pending' => 'In Attesa',
+        'in_progress' => 'In Corso',
+        'under_review' => 'In Esame',
+        'completed' => 'Completato',
+    ];
+    // Get all applications with their profile
+     $applications = Application::query()
+      ->select([
+            'id',
+            'role_id',
+            'status',
+            'profile_id', // Include the foreign key for the relationship
+            // Add any other fields you need from the applications table
+        ])
+        ->with(['profile' => function($query) {
+            $query->select('id', 'stage_name'); // Only select the fields you need
+        }])
+        ->orderBy('id')
+        ->get();
+    // Group by status
+    $grouped = $applications->groupBy('status');
+    // Initialize tasks with all statuses
+    $tasks = [];
+    foreach ($statuses as $statusKey => $statusName) {
+        $tasks[$statusKey] = $grouped->get($statusKey, collect());
+    }
+    return [
+        'statuses' => $statuses,
+        'tasks' => $tasks,
+    ];
+}
 
     protected function getHeaderWidgets(): array
     {

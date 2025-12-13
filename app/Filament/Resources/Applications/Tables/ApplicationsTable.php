@@ -121,6 +121,8 @@ class ApplicationsTable
                     DeleteBulkAction::make(),
                 ]),
             ])
+            ->paginationPageOptions([5, 10, 25, 50])
+            ->defaultPaginationPageOption(10)
             ->defaultSort('created_at', 'desc');
     }
 }

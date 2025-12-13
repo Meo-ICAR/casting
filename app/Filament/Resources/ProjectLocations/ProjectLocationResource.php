@@ -23,7 +23,6 @@ class ProjectLocationResource extends Resource
     protected static ?string $navigationLabel = 'Location';
     protected static ?string $modelLabel = 'Location';
     protected static ?string $pluralModelLabel = 'Locations';
-    protected static UnitEnum|string|null $navigationGroup = 'Produzione';
     protected static ?int $navigationSort = 3;
 
 
