@@ -77,22 +77,14 @@ class ApplicationsKanban extends ListRecords
     public function table(Table $table): Table
     {
         return $table
-            ->defaultGroup('status')
-            ->defaultSort('created_at', 'desc')
-            ->columns([
-                \Filament\Tables\Columns\Layout\View::make('filament.tables.components.application-kanban-card')
-                    ->viewData([
-                        /*
-                        'viewAction' => ViewAction::make()
-                            ->url(fn (Application $record): string => ApplicationResource::getUrl('view', ['record' => $record])),
-                        'editAction' => EditAction::make()
-                            ->url(fn (Application $record): string => ApplicationResource::getUrl('edit', ['record' => $record])),
-                        'deleteAction' => DeleteAction::make()
-                            ->url(fn (Application $record): string => ApplicationResource::getUrl('delete', ['record' => $record])),
-                        */
-                    ])
-            ])
-            ->contentGrid([
+              ->defaultGroup('status')
+        ->columns([
+          \Filament\Tables\Columns\TextColumn::make('profile.stage_name')
+                ->label('Name')
+                ->searchable(),
+
+        ])
+                    ->contentGrid([
                 'md' => 2,
                 'xl' => 3,
                 '2xl' => 4,
