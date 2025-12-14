@@ -65,17 +65,7 @@ class ApplicationsKanban extends ListRecords
         'under_review' => 'Completato',
     ];
 
-    public function __construct()
-    {
-         $this->statuses = [
-            ApplicationStatus::DISPONIBILITA->value => ApplicationStatus::DISPONIBILITA->getLabel(),
-            ApplicationStatus::PENDING->value => ApplicationStatus::PENDING->getLabel(),
-            ApplicationStatus::UNDER_REVIEW->value => ApplicationStatus::UNDER_REVIEW->getLabel(),
-            ApplicationStatus::CALLBACK->value => ApplicationStatus::CALLBACK->getLabel(),
-            ApplicationStatus::REJECTED->value => ApplicationStatus::REJECTED->getLabel(),
-            ApplicationStatus::ACCEPTED->value => ApplicationStatus::ACCEPTED->getLabel(),
-        ];
-    }
+
 
     // Restituisci il campo del modello che contiene lo stato
     protected function statuses(): array

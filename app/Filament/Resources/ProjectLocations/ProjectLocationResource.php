@@ -19,11 +19,11 @@ use Filament\Tables\Table;
 class ProjectLocationResource extends Resource
 {
     protected static ?string $model = ProjectLocation::class;
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+   protected static BackedEnum|string|null $navigationIcon = 'heroicon-s-video-camera';
     protected static ?string $navigationLabel = 'Set';
     protected static ?string $modelLabel = 'Set';
     protected static ?string $pluralModelLabel = 'Sets';
-    protected static UnitEnum|string|null $navigationGroup = 'Produzione';
+    protected static UnitEnum|string|null $navigationGroup = 'Gestione';
     protected static ?int $navigationSort = 4;
 
 
@@ -45,5 +45,9 @@ class ProjectLocationResource extends Resource
             'edit' => EditProjectLocation::route('/{record}/edit'),
             'view' => ViewProjectLocation::route('/{record}'),
         ];
+    }
+       public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }

@@ -14,6 +14,7 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Columns\IconColumn;
+use App\Enums\ProjectLocationStatus;
 
 
 class ProjectLocationsTable
@@ -28,7 +29,7 @@ class ProjectLocationsTable
                 ->searchable(),
 
             TextColumn::make('name')
-                ->label('Nome')
+                ->label('Set')
                 ->searchable()
                 ->sortable(),
 
@@ -37,30 +38,29 @@ class ProjectLocationsTable
                 ->searchable()
                 ->sortable(),
 
-            TextColumn::make('location_type')
-                ->label('Tipologia')
-                ->badge()
-                ->formatStateUsing(fn (string $state): string => ProjectLocation::getLocationTypeOptions()[$state] ?? $state)
-                ->searchable()
-                ->sortable(),
+      TextColumn::make('location_type')
+    ->label('Tipologia')
+    ->badge()
+    ->formatStateUsing(fn ($state): string => is_object($state) ? $state->value : (ProjectLocation::getLocationTypeOptions()[$state] ?? $state))
+    ->searchable()
+    ->sortable(),
 
             TextColumn::make('shooting_date')
                 ->label('Data riprese')
                 ->date()
                 ->sortable(),
 
-            TextColumn::make('status')
-                ->label('Stato')
-                ->badge()
-                ->color(fn (string $state): string => match ($state) {
-                    ProjectLocation::STATUS_PENDING => 'gray',
-                    ProjectLocation::STATUS_REQUESTED => 'info',
-                    ProjectLocation::STATUS_CONFIRMED => 'success',
-                    ProjectLocation::STATUS_COMPLETED => 'primary',
-                    ProjectLocation::STATUS_CANCELLED => 'danger',
-                    default => 'gray',
-                })
-                ->sortable(),
+        TextColumn::make('status')
+    ->label('Stato')
+    ->badge()
+    ->formatStateUsing(fn ($state): string => $state instanceof ProjectLocationStatus
+        ? $state->getLabel()
+        : (ProjectLocationStatus::tryFrom($state)?->getLabel() ?? $state))
+    ->color(fn ($state) => $state instanceof ProjectLocationStatus
+        ? $state->getColor()
+        : (ProjectLocationStatus::tryFrom($state)?->getColor() ?? 'gray'))
+    ->searchable()
+    ->sortable(),
                 IconColumn::make('is_open')
     ->label('Stato')
     ->boolean()
@@ -94,16 +94,10 @@ class ProjectLocationsTable
                 ->toggle(),
         ])
         ->actions([
-            EditAction::make()
-                ->label('Modifica'),
-           DeleteAction::make()
-                ->label('Elimina'),
+
         ])
         ->bulkActions([
-            BulkActionGroup::make([
-                DeleteBulkAction::make()
-                    ->label('Elimina selezionate'),
-            ]),
+
         ])
         ->defaultSort('shooting_date', 'asc')
         ->emptyStateHeading('Nessun set presente')

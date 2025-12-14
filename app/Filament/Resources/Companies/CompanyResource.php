@@ -20,11 +20,11 @@ class CompanyResource extends Resource
     protected static ?string $model = Company::class;
 
  protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-    protected static ?string $navigationLabel = 'Case';
-    protected static ?string $modelLabel = 'Casa';
-    protected static ?string $pluralModelLabel = 'Casa';
+    protected static ?string $navigationLabel = 'Case Produzione';
+    protected static ?string $modelLabel = 'Casa Produzione';
+    protected static ?string $pluralModelLabel = 'Casa Produzione';
     protected static UnitEnum|string|null $navigationGroup = 'Sistema';
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 2;
 
 
     protected static ?string $recordTitleAttribute = 'name';

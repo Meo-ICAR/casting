@@ -6,10 +6,19 @@ use App\Enums\ProjectLocationStatus;
 use App\Enums\ProjectLocationType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProjectLocation extends Model
 {
     use HasFactory;
+
+    /**
+     * Get all offers for this project location.
+     */
+    public function offers(): HasMany
+    {
+        return $this->hasMany(Offer::class);
+    }
 
     protected $fillable = [
         'project_id',

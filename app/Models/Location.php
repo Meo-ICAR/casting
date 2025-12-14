@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -16,6 +17,14 @@ class Location extends Model implements HasMedia
 {
     use SoftDeletes, InteractsWithMedia;
     use HasWhatsapp; // <--- Attivalo qui
+
+    /**
+     * Get all offers for this location.
+     */
+    public function offers(): HasMany
+    {
+        return $this->hasMany(Offer::class);
+    }
 
     /**
      * The attributes that are mass assignable.

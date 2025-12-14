@@ -18,11 +18,11 @@ use Filament\Tables\Table;
 class ProjectServiceResource extends Resource
 {
     protected static ?string $model = ProjectService::class;
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-    protected static ?string $navigationLabel = 'Servizio';
-    protected static ?string $modelLabel = 'Servizio';
-    protected static ?string $pluralModelLabel = 'Servizi richiesti';
-    protected static UnitEnum|string|null $navigationGroup = 'Produzione';
+  protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedWrenchScrewdriver;
+    protected static ?string $navigationLabel = 'Service';
+    protected static ?string $modelLabel = 'Service';
+    protected static ?string $pluralModelLabel = 'Services richiesti';
+     protected static UnitEnum|string|null $navigationGroup = 'Gestione';
     protected static ?int $navigationSort = 4;
 
     public static function form(Schema $schema): Schema

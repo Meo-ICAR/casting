@@ -26,12 +26,13 @@ class QuotationResource extends Resource
 {
     protected static ?string $model = Quotation::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
+    protected static string|BackedEnum|null $navigationIcon =
+    Heroicon::OutlinedWrenchScrewdriver;
     protected static ?string $navigationLabel = 'Preventivi';
     protected static ?string $modelLabel = 'Preventivo';
     protected static ?string $pluralModelLabel = 'Preventivi';
-    protected static UnitEnum|string|null $navigationGroup = 'Produzione';
-    protected static ?int $navigationSort = 3;
+    protected static UnitEnum|string|null $navigationGroup = 'In lavorazione';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

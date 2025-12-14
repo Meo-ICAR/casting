@@ -22,10 +22,10 @@ class ProjectResource extends Resource
     protected static ?string $model = Project::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFilm;
-    protected static ?string $navigationLabel = 'Progetti';
-    protected static ?string $modelLabel = 'Progetto';
-    protected static ?string $pluralModelLabel = 'Progetti';
-    protected static UnitEnum|string|null $navigationGroup = 'Produzione';
+    protected static ?string $navigationLabel = 'Produzione';
+    protected static ?string $modelLabel = 'Produzione';
+    protected static ?string $pluralModelLabel = 'Produzioni';
+    protected static UnitEnum|string|null $navigationGroup = 'Gestione';
     protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema

@@ -22,12 +22,12 @@ class ApplicationResource extends Resource
 {
     protected static ?string $model = Application::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+   protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-user-circle';
     protected static ?string $navigationLabel = 'Candidature';
     protected static ?string $modelLabel = 'Candidatura';
     protected static ?string $pluralModelLabel = 'Candidature';
-    protected static UnitEnum|string|null $navigationGroup = 'Produzione';
-    protected static ?int $navigationSort = 7;
+    protected static UnitEnum|string|null $navigationGroup = 'In lavorazione';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
     {
@@ -74,12 +74,14 @@ class ApplicationResource extends Resource
         $items = parent::getNavigationItems();
 
         // Add Kanban view as a sub-item
+        /*
         $items[] = \Filament\Navigation\NavigationItem::make('kanban')
             ->label('Vista Kanban')
             ->icon('heroicon-o-view-columns')
             ->group('Produzione')
             ->sort(4.5)
             ->url(static::getUrl('kanban'));
+            */
 
         return $items;
     }

@@ -17,7 +17,7 @@ class CastingBoard  extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
     protected static ?string $navigationLabel = 'Casting';
     protected static UnitEnum|string|null $navigationGroup = 'Produzione';
-    protected static ?string $title = 'Kanban Board';
+    protected static ?string $title = 'Planner';
 
     // Collega la vista che modificheremo dopo
     protected static string $view = 'filament.pages.casting-board';
