@@ -1,0 +1,11 @@
+{
+    "$schema": "https://www.schemastore.org/package.json",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "echo 'No development server needed with Filament 4.3. Use `php artisan serve` instead.'"
+    },
+    "devDependencies": {
+        "axios": "^1.11.0"
+    }
+}
