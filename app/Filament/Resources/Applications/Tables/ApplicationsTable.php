@@ -49,7 +49,7 @@ class ApplicationsTable
                     ->sortable(),
 
                 TextColumn::make('role.project.title')
-                    ->label('Progetto')
+                    ->label('Produzione')
                     ->searchable()
                     ->sortable()
                     ->toggleable(),

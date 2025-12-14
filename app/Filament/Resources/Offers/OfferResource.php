@@ -9,7 +9,6 @@ use App\Filament\Resources\Offers\Pages\ListOffers;
 use App\Filament\Resources\Offers\Schemas\OfferForm;
 use App\Filament\Resources\Offers\Tables\OffersTable;
 use App\Models\Offer;
-
 use BackedEnum;
 use UnitEnum;
 use Filament\Resources\Resource;
@@ -21,11 +20,12 @@ use Filament\Tables\Table;
 class OfferResource extends Resource
 {
     protected static ?string $model = Offer::class;
+     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-currency-euro';
   //  protected static ?string $navigationIcon = 'heroicon-o-currency-euro';
     protected static ?string $navigationLabel = 'Offerte';
     protected static ?string $modelLabel = 'Offerta';
     protected static ?string $pluralModelLabel = 'Offerte';
-    protected static ?string $navigationGroup = 'Produzione';
+    protected static UnitEnum|string|null $navigationGroup = 'In lavorazione';
     protected static ?int $navigationSort = 5;
 
     public static function form(Schema $schema): Schema

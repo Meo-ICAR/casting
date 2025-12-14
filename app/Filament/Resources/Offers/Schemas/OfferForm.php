@@ -6,16 +6,18 @@ use App\Models\Location;
 use App\Models\ProjectLocation;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
+use Filament\Forms\Components\Textarea;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 
 class OfferForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema->schema([
+         return $schema
+            ->components([
             Select::make('project_location_id')
                 ->label('Set di Produzione')
                 ->options(ProjectLocation::all()->pluck('name', 'id'))

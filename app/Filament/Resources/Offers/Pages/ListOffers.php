@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Offers\Pages;
 
-use App\Filament\Resources\OfferResource;
+use App\Filament\Resources\Offers\OfferResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 

@@ -25,7 +25,7 @@ class ProjectResource extends Resource
     protected static ?string $navigationLabel = 'Produzione';
     protected static ?string $modelLabel = 'Produzione';
     protected static ?string $pluralModelLabel = 'Produzioni';
-    protected static UnitEnum|string|null $navigationGroup = 'Gestione';
+   protected static UnitEnum|string|null $navigationGroup = 'Richieste';
     protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema

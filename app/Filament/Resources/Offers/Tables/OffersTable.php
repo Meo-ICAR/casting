@@ -6,6 +6,7 @@ use App\Filament\Resources\Offers\Tables\Columns;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\ImageColumn;
 
 class OffersTable
 {
@@ -13,6 +14,12 @@ class OffersTable
     {
         return $table
             ->columns([
+
+                TextColumn::make('projectLocation.project.title')
+                    ->label('Produzione')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('projectLocation.name')
                     ->label('Set di Produzione')
                     ->searchable()
@@ -22,6 +29,13 @@ class OffersTable
                     ->label('Location')
                     ->searchable()
                     ->sortable(),
+                 ImageColumn::make('location.headshots')
+                    ->label('')
+                    ->getStateUsing(fn ($record) => $record->location->getFirstMediaUrl('photos', 'thumb'))
+
+                    ->defaultImageUrl(url('/images/default-avatar.png'))
+                    ->size(40),
+
 
                 TextColumn::make('price')
                     ->label('Prezzo')
@@ -53,13 +67,13 @@ class OffersTable
                 // Add filters if needed
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+               // EditAction::make(),
+                // DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+               // Tables\Actions\BulkActionGroup::make([
+                //Tables\Actions\DeleteBulkAction::make(),
+                //]),
             ]);
     }
 }

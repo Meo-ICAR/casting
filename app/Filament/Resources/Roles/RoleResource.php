@@ -25,7 +25,7 @@ class RoleResource extends Resource
     protected static ?string $navigationLabel = 'Ruoli';
     protected static ?string $modelLabel = 'Ruolo';
     protected static ?string $pluralModelLabel = 'Ruoli';
-   protected static UnitEnum|string|null $navigationGroup = 'Gestione';
+   protected static UnitEnum|string|null $navigationGroup = 'Richieste';
     protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
