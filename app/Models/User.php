@@ -10,10 +10,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Enums\UserRole;
+use Spatie\Permission\Traits\HasRoles;
+use Filament\Panel;
 
-class User extends Authenticatable // implements FilamentUser (se vuoi restringere l'accesso)
+class User extends Authenticatable implements FilamentUser
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->hasRole('admin') || $this->hasRole('host') || $this->hasRole('servicer');
+    }
+
 
     protected $fillable = ['name', 'last_name', 'email', 'password', 'role', 'company_id'];
 
@@ -79,4 +87,52 @@ public function isCasting(): bool
 {
     return $this->role === UserRole::CASTING || $this->isAdmin();
 }
+
+
+public function hasRole($role): bool
+{
+    return $this->roles->contains('name', $role);
+}
+
+public function hasAnyRole($roles): bool
+{
+    return $this->roles->pluck('name')->intersect($roles)->isNotEmpty();
+}
+
+public function getRoleNames(): \Illuminate\Support\Collection
+{
+    return $this->roles->pluck('name');
+}
+
+public function getAllPermissions(): \Illuminate\Support\Collection
+{
+    return $this->permissions->pluck('name');
+}
+
+public function getPermissionNames(): \Illuminate\Support\Collection
+{
+    return $this->getAllPermissions();
+}
+
+public function hasPermission($permission): bool
+{
+    return $this->getAllPermissions()->contains($permission);
+}
+
+public function hasAnyPermission($permissions): bool
+{
+    return $this->getAllPermissions()->intersect($permissions)->isNotEmpty();
+}
+
+
+protected static function booted()
+    {
+        static::created(function ($user) {
+            // Assign default 'actor' role to new users
+            $user->assignRole('actor');
+
+            // Create profile for new user
+            $user->profile()->create();
+        });
+    }
 }

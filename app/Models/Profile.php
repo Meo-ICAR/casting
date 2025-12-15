@@ -184,4 +184,12 @@ public function getMatchingRolesAttribute()
     return $this->getMatchingRolesQuery()->get();
 }
 
+public function scopeForCurrentUser($query)
+{
+    if (auth()->user()->hasRole('actor')) {
+        return $query->where('user_id', auth()->id());
+    }
+    return $query;
+}
+
     }

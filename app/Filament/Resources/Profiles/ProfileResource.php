@@ -570,12 +570,11 @@ class ProfileResource extends Resource
         return true;
     }
 
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->with(['user', 'media'])
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
-    }
+  public static function getEloquentQuery(): Builder
+{
+    return parent::getEloquentQuery()
+        ->with(['user', 'media'])
+        ->withoutGlobalScopes([SoftDeletingScope::class])
+        ->forCurrentUser();
+}
 }

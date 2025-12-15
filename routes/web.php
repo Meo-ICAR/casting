@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Livewire\CastingSearch;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\SocialAuthController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -42,3 +43,7 @@ Route::get('/profile/{profile}/roles', function (App\Models\Profile $profile) {
         'record' => $profile->id
     ])->render();
 })->name('profile.roles');
+
+// Social Login Routes
+Route::get('/login/{provider}', [SocialAuthController::class, 'redirectToProvider'])->name('social.login');
+Route::get('/login/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback'])->name('social.callback');
