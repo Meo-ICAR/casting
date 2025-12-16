@@ -91,12 +91,6 @@ class ProjectResource extends Resource
     {
         $items = parent::getNavigationItems();
 
-        // Add a second navigation item for the custom table view
-        $items[] = NavigationItem::make('Custom Projects View')
-            ->url(static::getUrl('index', ['view' => 'custom']))
-            ->icon(static::getNavigationIcon())
-            ->isActiveWhen(fn () => request()->routeIs(static::getRouteBaseName() . '.index') && request()->get('view') === 'custom')
-            ->sort(2);
 
         return $items;
     }

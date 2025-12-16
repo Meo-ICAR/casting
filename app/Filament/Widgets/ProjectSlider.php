@@ -3,16 +3,24 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Project;
-use Filament\Widgets\Widget;
+use Filament\Tables\Table;
+use Filament\Widgets\TableWidget as BaseWidget;
+use App\Filament\Resources\Projects\Tables\ProjectsTableView;
 
-class ProjectSlider extends Widget
+class ProjectSlider extends BaseWidget
 {
-    protected static ?string $heading = 'Ultimi Progetti';
-
+    protected static ?string $heading = 'Ultimi Ruoli';
     protected int|string|array $columnSpan = 'full';
-    protected string $view = 'filament.widgets.project-slider';
-    public function getProjects()
+
+    public function table(Table $table): Table
     {
-        return Project::with('media')->latest()->get();
+        return ProjectsTableView::configure($table);
+    }
+
+    protected function getTableQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return Project::query()
+            ->with(['roles'])
+            ->latest();
     }
 }

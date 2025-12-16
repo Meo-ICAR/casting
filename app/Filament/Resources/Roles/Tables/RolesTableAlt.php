@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Roles\Tables;
 
-use App\Filament\Resources\Applications\ApplicationResource;
+
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -65,18 +65,6 @@ class RolesTableAlt
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('applications_count')
-                    ->label('Candidature')
-                    ->counts('applications')
-                    ->getStateUsing(fn ($record) => $record->applications()->count())
-                    ->url(fn ($record) => $record->applications()->count() > 0
-                        ? ApplicationResource::getUrl('kanban.role', ['role' => $record->id])
-                        : null
-                    )
-                    ->badge()
-                    ->color(fn ($record) => $record->applications()->count() > 0 ? 'primary' : 'gray')
-                    ->icon(fn ($record) => $record->applications()->count() > 0 ? 'heroicon-o-arrow-top-right-on-square' : null)
-                    ->sortable(),
 
                 IconColumn::make('is_open')
                     ->label('Aperto')
