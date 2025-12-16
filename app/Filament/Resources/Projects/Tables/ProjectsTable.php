@@ -12,6 +12,8 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use App\Enums\ProjectType;
+use App\Enums\ProjectStatus;
 
 class ProjectsTable
 {
@@ -32,44 +34,19 @@ class ProjectsTable
                     ->weight('bold')
                     ->description(fn ($record) => $record->production_company ?: null),
 
-                TextColumn::make('type')
+               TextColumn::make('type')
                     ->label('Tipo')
                     ->badge()
-                    ->formatStateUsing(fn ($state) => match($state) {
-                        'feature_film' => 'Film',
-                        'commercial' => 'Spot',
-                        'tv_series' => 'Serie TV',
-                        'short' => 'Corto',
-                        'documentary' => 'Doc',
-                        'web_series' => 'Web',
-                        default => ucfirst($state),
-                    })
-                    ->color(fn ($state) => match($state) {
-                        'feature_film' => 'success',
-                        'tv_series' => 'info',
-                        'commercial' => 'warning',
-                        default => 'gray',
-                    })
+                    ->formatStateUsing(fn ($state) => ProjectType::from($state)->label())
+                    ->color(fn ($state) => ProjectType::from($state)->color())
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('status')
                     ->label('Stato')
                     ->badge()
-                    ->formatStateUsing(fn ($state) => match($state) {
-                        'casting' => 'In Casting',
-                        'production' => 'In Produzione',
-                        'wrapped' => 'Completato',
-                        'cancelled' => 'Annullato',
-                        default => ucfirst($state),
-                    })
-                    ->color(fn ($state) => match($state) {
-                        'casting' => 'info',
-                        'production' => 'warning',
-                        'wrapped' => 'success',
-                        'cancelled' => 'danger',
-                        default => 'gray',
-                    })
+                    ->formatStateUsing(fn ($state) => ProjectStatus::from($state)->label())
+                    ->color(fn ($state) => ProjectStatus::from($state)->color())
                     ->searchable()
                     ->sortable(),
 
@@ -102,24 +79,16 @@ class ProjectsTable
             ->filters([
                 SelectFilter::make('type')
                     ->label('Tipo Progetto')
-                    ->options([
-                        'feature_film' => 'Film Lungometraggio',
-                        'commercial' => 'Spot Pubblicitario',
-                        'tv_series' => 'Serie TV',
-                        'short' => 'Cortometraggio',
-                        'documentary' => 'Documentario',
-                        'web_series' => 'Web Series',
-                    ])
+                    ->options(
+                        collect(ProjectType::cases())
+                            ->mapWithKeys(fn($type) => [$type->value => $type->filterLabel()])
+                            ->toArray()
+                    )
                     ->multiple(),
 
                 SelectFilter::make('status')
                     ->label('Stato')
-                    ->options([
-                        'casting' => 'In Casting',
-                        'production' => 'In Produzione',
-                        'wrapped' => 'Completato',
-                        'cancelled' => 'Annullato',
-                    ])
+                    ->options(ProjectStatus::options())
                     ->multiple(),
 
                 SelectFilter::make('user_id')

@@ -26,6 +26,8 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->brandLogo(asset('castingprologo.png'))
+            ->brandLogoHeight('50px')
             ->default()
             ->id('admin')
             ->path('admin')

@@ -8,7 +8,8 @@ use App\Filament\Resources\Roles\Pages\ListRoles;
 use App\Filament\Resources\Roles\Pages\ViewRole;
 use App\Filament\Resources\Roles\Schemas\RoleForm;
 use App\Filament\Resources\Roles\Schemas\RoleInfolist;
-use App\Filament\Resources\Roles\Tables\RolesTableAlt as RolesTable;
+use App\Filament\Resources\Roles\Tables\RolesTableAlt;
+use App\Filament\Resources\Roles\Tables\RolesTable;
 use App\Models\Role;
 use BackedEnum;
 use UnitEnum;
@@ -38,10 +39,13 @@ class RoleResource extends Resource
         return RoleInfolist::configure($schema);
     }
 
-    public static function table(Table $table): Table
-    {
-        return RolesTable::configure($table); // Using RolesTableAlt with the alias RolesTable
+   public static function table(Table $table): Table
+{
+    if (config('app.use_alt_roles_table', false)) {
+        return RolesTableAlt::configure($table);
     }
+    return RolesTable::configure($table);
+}
 
     public static function getRelations(): array
     {

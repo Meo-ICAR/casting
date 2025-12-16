@@ -21,6 +21,7 @@ use Filament\Tables\Columns\Layout\Stack;
 use App\Models\Project;
 use App\Filament\Resources\Roles\RoleResource;
 use Filament\Actions\Action;
+use App\Enums\ProjectType;
 
 class ProjectsTableView
 {
@@ -63,10 +64,16 @@ class ProjectsTableView
                     ->searchable()
                     ->sortable()
                     ->weight('bold')
-                    ->description('Ricerca:'),
+
 
 
        ]),
+               TextColumn::make('type')
+                    ->label('Tipo')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => ProjectType::from($state)->label())
+                    ->color(fn ($state) => ProjectType::from($state)->color()),
+
 
                         // Riga 2: Altezza e Visibilità
                         Split::make([
