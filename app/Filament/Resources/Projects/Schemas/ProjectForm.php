@@ -9,8 +9,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
-
-use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class ProjectForm
 {
@@ -84,30 +83,16 @@ class ProjectForm
                                 ->placeholder('Es: Milano, Roma, Napoli')
                                 ->helperText('Città dove si svolgono prevalentemente le riprese'),
 
-FileUpload::make('poster_upload')
-    ->label('Poster')
-    ->image()
-    ->imageEditor()
-    ->directory('project-posters')
-    ->visibility('public')
-    ->preserveFilenames()
-    ->imageResizeMode('cover')
-    ->imageCropAspectRatio('2:3')
-    ->imageResizeTargetWidth('800')
-   // ->maxSize(2048)
-     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/jpg'])
-
-    ->downloadable()
-    ->openable()
-    ->imagePreviewHeight('400')
-    ->columnSpan(2)
-    ->afterStateUpdated(function ($state, $record) {
-        if ($state) {
-            $record->clearMediaCollection('poster');
-            $record->addMedia($state)->toMediaCollection('poster');
-        }
-    }),
-            ])
+  SpatieMediaLibraryFileUpload::make('photos')
+                            ->label('Poster')
+                            ->collection('photos')
+                            ->image()
+                            ->imageEditor()
+                            ->reorderable()
+                            ->maxFiles(20)
+                            ->maxSize(10240) // 10MB
+                            ->columnSpanFull(),
+                                ])
                     ]);
     }
 }

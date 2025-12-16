@@ -28,43 +28,6 @@ class Project extends Model implements HasMedia
     {
         return $this->belongsTo(Company::class, 'company_id');
     }
-
-
-public function setPosterAttribute($value)
-{
-    if ($value) {
-        if ($this->hasMedia('poster')) {
-            $this->clearMediaCollection('poster');
-        }
-        $this->addMedia($value)
-             ->toMediaCollection('poster');
-    }
-}
-
-// Add this method to get the poster URL
-public function getPosterUrlAttribute()
-{
-    return $this->getFirstMediaUrl('poster');
-}
-public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('poster')
-             ->singleFile()
-             ->useDisk('public')
-             ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp'])
-             ->withResponsiveImages();
-             $this->addMediaConversion('thumb')
-        ->width(200)
-        ->height(300)
-        ->sharpen(10)
-        ->nonQueued();
-    $this->addMediaConversion('preview')
-        ->width(400)
-        ->height(600)
-        ->sharpen(10)
-        ->nonQueued();
-    }
-
     public function roles(): HasMany
     {
         return $this->hasMany(Role::class);
@@ -93,4 +56,69 @@ public function registerMediaCollections(): void
     {
         return $this->hasMany(Quotation::class);
     }
+  /**
+     * Register the media collections.
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('photos')
+            ->useDisk('public')
+            ->singleFile(false)
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+    }
+
+    /**
+     * Register the conversions for media files.
+     */
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(300)
+            ->height(300)
+            ->sharpen(10)
+            ->optimize()
+            ->performOnCollections('photos');
+
+        $this->addMediaConversion('preview')
+            ->width(800)
+            ->height(600)
+            ->sharpen(10)
+            ->optimize()
+            ->performOnCollections('photos');
+    }
+
+    /**
+     * Get all the photos for the location.
+     */
+    public function getPhotosAttribute()
+    {
+        return $this->getMedia('photos');
+    }
+
+    /**
+     * Get the primary photo for the location.
+     */
+    public function getPrimaryPhotoAttribute()
+    {
+        return $this->getFirstMedia('photos');
+    }
+
+
+
+    /**
+     * Get the main photo URL.
+     */
+    public function getMainPhotoUrlAttribute(): ?string
+    {
+        return $this->primary_photo?->getUrl('preview');
+    }
+
+    /**
+     * Get the thumbnail URL.
+     */
+    public function getThumbnailUrlAttribute(): ?string
+    {
+        return $this->primary_photo?->getUrl('thumb');
+    }
+
 }

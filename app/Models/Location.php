@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use App\Models\User;
 use Spatie\Image\Manipulations;
 use App\Traits\HasWhatsapp; // <--- Importa il Trait
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Location extends Model implements HasMedia
 {
@@ -63,6 +63,46 @@ class Location extends Model implements HasMedia
     ];
 
     /**
+     * Get the user who created the location.
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * Scope a query to only include active locations.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Get the full address as a single string.
+     */
+    public function getFullAddressAttribute(): string
+    {
+        $parts = [
+            $this->address,
+            $this->postal_code,
+            $this->city,
+            $this->province,
+            $this->country,
+        ];
+
+        return implode(', ', array_filter($parts));
+    }
+
+    /**
+     * Check if the location has coordinates.
+     */
+    public function hasCoordinates(): bool
+    {
+        return !is_null($this->latitude) && !is_null($this->longitude);
+    }
+
+    /**
      * Register the media collections.
      */
     public function registerMediaCollections(): void
@@ -109,37 +149,7 @@ class Location extends Model implements HasMedia
         return $this->getFirstMedia('photos');
     }
 
-    /**
-     * Get the user who created the location.
-     */
-    public function creator(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
 
-    /**
-     * Scope a query to only include active locations.
-     */
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', true);
-    }
-
-    /**
-     * Get the full address as a single string.
-     */
-    public function getFullAddressAttribute(): string
-    {
-        $parts = [
-            $this->address,
-            $this->postal_code,
-            $this->city,
-            $this->province,
-            $this->country,
-        ];
-
-        return implode(', ', array_filter($parts));
-    }
 
     /**
      * Get the main photo URL.
@@ -157,11 +167,5 @@ class Location extends Model implements HasMedia
         return $this->primary_photo?->getUrl('thumb');
     }
 
-    /**
-     * Check if the location has coordinates.
-     */
-    public function hasCoordinates(): bool
-    {
-        return !is_null($this->latitude) && !is_null($this->longitude);
-    }
+
 }

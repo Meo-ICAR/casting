@@ -48,6 +48,6 @@ class Company extends Model
 
     public function directorsAndAdmins()
 {
-    return $this->users()->is);
+    return $this->users()->isDirector();
 }
 }

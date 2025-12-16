@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Locations\Schemas;
 
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
@@ -13,6 +13,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class LocationForm
 {

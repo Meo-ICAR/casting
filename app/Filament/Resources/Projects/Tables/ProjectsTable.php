@@ -19,28 +19,18 @@ class ProjectsTable
     {
         return $table
             ->columns([
-                /*
-                           ImageColumn::make('poster')
+         ImageColumn::make('thumbnail')
                     ->label('')
                     ->getStateUsing(fn ($record) => $record->getFirstMediaUrl('photos', 'thumb'))
-                       ->label('Poster')
-    ->collection('poster')
-    ->conversion('thumb')
                     ->defaultImageUrl(url('/images/default-avatar.png'))
-                    ->size(100),
-*/
+                    ->size(50),
+
                 TextColumn::make('title')
                     ->label('Titolo')
                     ->searchable()
                     ->sortable()
                     ->weight('bold')
                     ->description(fn ($record) => $record->production_company ?: null),
-
-                TextColumn::make('owner.name')
-                    ->label('Casting Director')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable(),
 
                 TextColumn::make('type')
                     ->label('Tipo')

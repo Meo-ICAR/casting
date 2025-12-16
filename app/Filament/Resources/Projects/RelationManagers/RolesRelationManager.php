@@ -30,20 +30,6 @@ class RolesRelationManager extends RelationManager
                     ->sortable()
                     ->weight('bold'),
 
-                TextColumn::make('salary_range')
-                    ->label('Compenso')
-                    ->getStateUsing(function ($record) {
-                        if ($record->salary_min && $record->salary_max) {
-                            return '€' . number_format($record->salary_min, 0, ',', '.') . ' - €' . number_format($record->salary_max, 0, ',', '.');
-                        } elseif ($record->salary_min) {
-                            return 'Da €' . number_format($record->salary_min, 0, ',', '.');
-                        } elseif ($record->salary_max) {
-                            return 'Fino a €' . number_format($record->salary_max, 0, ',', '.');
-                        }
-                        return 'Non specificato';
-                    })
-                    ->placeholder('Non specificato')
-                    ->toggleable(),
 
                 TextColumn::make('applications_count')
                     ->label('Candidature')

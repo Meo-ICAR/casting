@@ -1,0 +1,12 @@
+/* resources/css/filament.css */
+/* Add smooth transitions for the slider */
+[x-cloak] { display: none !important; }
+/* Customize the slider appearance */
+.filament-widget {
+    @apply mb-6;
+}
+/* Make sure images are responsive */
+img {
+    max-width: 100%;
+    height: auto;
+}
