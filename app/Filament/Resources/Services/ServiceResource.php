@@ -27,8 +27,17 @@ class ServiceResource extends Resource
     protected static ?string $navigationLabel = 'Servizi';
     protected static ?string $modelLabel = 'Servizio';
     protected static ?string $pluralModelLabel = 'Servizi';
-    protected static UnitEnum|string|null $navigationGroup = 'Database';
+   // protected static UnitEnum|string|null $navigationGroup = 'Database';
     protected static ?int $navigationSort = 2;
+
+    public static function getNavigationGroup(): ?string
+{
+    return 'Database'; // The name of the group
+}
+public static function shouldRegisterNavigation(): bool
+{
+    return auth()->user()?->isServicer();
+}
 
     public static function form(Schema $schema): Schema
     {
@@ -55,8 +64,14 @@ class ServiceResource extends Resource
 
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
-        return parent::getEloquentQuery()
-            ->with(['user']);
+        $query = parent::getEloquentQuery()
+        ->with(['serviceType','user']);
+    // If user is a servicer, only show services from their company
+    if (auth()->user()->isServicer() && !auth()->user()->isAdmin()) {
+        $query->where('company_id', auth()->user()->company_id);
+    }
+     return $query; // Add this line to return the query
+
     }
 
     public static function getPages(): array
@@ -71,6 +86,11 @@ class ServiceResource extends Resource
 
         ];
     }
+
+    public static function canViewAny(): bool
+{
+    return auth()->user()?->isServicer();
+}
 
     public static function getNavigationBadge(): ?string
     {

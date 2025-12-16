@@ -69,36 +69,45 @@ class ProjectSeriviceRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
+        $query = $this->getTableQuery();
+
+        // If user is a director, filter services by company_id
+        if (auth()->user()->isDirector() && !auth()->user()->isAdmin()) {
+            $query->whereHas('project', function($q) {
+                $q->where('company_id', auth()->user()->company_id);
+            });
+
+        }
+
         return $table
-          //  ->recordTitleAttribute('service.name')
+            ->query($query)
             ->columns([
-              TextColumn::make('name')
-                ->label('Nome')
-                ->searchable(),
+                TextColumn::make('name')
+                    ->label('Nome')
+                    ->searchable(),
 
-            TextColumn::make('serviceType.name')
-                ->label('Tipo servizio')
-                ->badge()
-                ->searchable(),
+                TextColumn::make('serviceType.name')
+                    ->label('Tipo servizio')
+                    ->badge()
+                    ->searchable(),
 
-            TextColumn::make('city')
-                ->label('Città')
-                ->searchable(),
+                TextColumn::make('city')
+                    ->label('Città')
+                    ->searchable(),
 
-            TextColumn::make('quantity')
-                ->label('Q.tà')
-                ->numeric()
-                ->sortable(),
+                TextColumn::make('quantity')
+                    ->label('Q.tà')
+                    ->numeric()
+                    ->sortable(),
 
-
-            TextColumn::make('needed_from')
-                ->label('Dal')
-                ->date()
-                ->sortable(),
+                TextColumn::make('needed_from')
+                    ->label('Dal')
+                    ->date()
+                    ->sortable(),
             ])
             ->actions([
                 ViewAction::make(),
             ])
-                ->defaultSort('created_at', 'desc');
+            ->defaultSort('created_at', 'desc');
     }
 }

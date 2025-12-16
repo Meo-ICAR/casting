@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Filament\Models\Contracts\FilamentUser;
+
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -10,17 +10,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Enums\UserRole;
-use Spatie\Permission\Traits\HasRoles;
 use Filament\Panel;
+use Filament\Models\Contracts\FilamentUser;
+
 
 class User extends Authenticatable implements FilamentUser
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable;
 
-    public function canAccessPanel(Panel $panel): bool
-    {
-        return $this->hasRole('admin') || $this->hasRole('host') || $this->hasRole('servicer');
-    }
+
 
 
     protected $fillable = ['name', 'last_name', 'email', 'password', 'role', 'company_id'];
@@ -77,8 +75,20 @@ public function isServicer(): bool
 // Update existing role check methods to use the enum
 public function isDirector(): bool
 {
-    return $this->role === UserRole::DIRECTOR || $this->isAdmin();
+    return $this->hasRole('director') || $this->isAdmin();
 }
+
+    /**
+     * Get all projects for the director's company
+     */
+    public function companyProjects()
+    {
+        if (!$this->company_id) {
+            return collect();
+        }
+
+        return Project::where('company_id', $this->company_id)->get();
+    }
 public function isActor(): bool
 {
     return $this->role === UserRole::ACTOR || $this->isAdmin();
@@ -89,43 +99,78 @@ public function isCasting(): bool
 }
 
 
+// Replace the existing hasRole method with this:
 public function hasRole($role): bool
 {
-    return $this->roles->contains('name', $role);
+    if (is_array($role)) {
+        return in_array($this->role->value, $role);
+    }
+    return $this->role === UserRole::from($role);
 }
-
-public function hasAnyRole($roles): bool
+// Also, update the canAccessPanel method to use the new hasRole method:
+public function canAccessPanel(Panel $panel): bool
 {
-    return $this->roles->pluck('name')->intersect($roles)->isNotEmpty();
+    return $this->hasRole('admin') || $this->hasRole('host') || $this->hasRole('servicer');
 }
+ public function hasAnyRole($roles): bool
+    {
+        if (is_string($roles)) {
+            $roles = [$roles];
+        }
 
-public function getRoleNames(): \Illuminate\Support\Collection
-{
-    return $this->roles->pluck('name');
-}
+        return in_array($this->role->value, $roles);
+    }
 
-public function getAllPermissions(): \Illuminate\Support\Collection
-{
-    return $this->permissions->pluck('name');
-}
+    // Update the getRoleNames method
+    public function getRoleNames(): \Illuminate\Support\Collection
+    {
+        return collect([$this->role->value]);
+    }
 
-public function getPermissionNames(): \Illuminate\Support\Collection
-{
-    return $this->getAllPermissions();
-}
+ // Update the getAllPermissions method
+    public function getAllPermissions(): \Illuminate\Support\Collection
+    {
+        // If you have specific permissions per role, define them here
+        $permissions = match($this->role) {
+            UserRole::ADMIN => ['*'],
+            UserRole::DIRECTOR => ['view_projects', 'manage_projects', 'view_services'],
+            UserRole::SERVICER => ['view_services', 'manage_services'],
+            UserRole::ACTOR => ['view_roles', 'apply_roles'],
+            UserRole::HOST => ['host_services'],
+            default => [],
+        };
+        return collect($permissions);
+    }
 
-public function hasPermission($permission): bool
-{
-    return $this->getAllPermissions()->contains($permission);
-}
 
-public function hasAnyPermission($permissions): bool
-{
-    return $this->getAllPermissions()->intersect($permissions)->isNotEmpty();
-}
+    // Update the hasPermission method
+    public function hasPermission($permission): bool
+    {
+        $permissions = $this->getAllPermissions();
 
+        // If user has wildcard permission
+        if ($permissions->contains('*')) {
+            return true;
+        }
 
-protected static function booted()
+        return $permissions->contains($permission);
+    }
+
+    // Update the hasAnyPermission method
+    public function hasAnyPermission($permissions): bool
+    {
+        if (is_string($permissions)) {
+            $permissions = [$permissions];
+        }
+        $userPermissions = $this->getAllPermissions();
+
+        // If user has wildcard permission
+        if ($userPermissions->contains('*')) {
+            return true;
+        }
+        return $userPermissions->intersect($permissions)->isNotEmpty();
+    }
+   protected static function booted()
     {
         static::created(function ($user) {
             // Assign default 'actor' role to new users
@@ -135,4 +180,41 @@ protected static function booted()
             $user->profile()->create();
         });
     }
+
+    // Add a method to assign role (if needed)
+    public function assignRole($role): self
+    {
+        $this->role = UserRole::from($role);
+        $this->save();
+        return $this;
+    }
+    // Add a method to remove role (if needed)
+    public function removeRole($role): self
+    {
+        if ($this->role === UserRole::from($role)) {
+            $this->role = UserRole::ACTOR; // or whatever your default role is
+            $this->save();
+        }
+        return $this;
+    }
+    // Add a method to sync roles (if needed)
+    public function syncRoles($roles): self
+    {
+        if (!empty($roles)) {
+            $this->role = UserRole::from(is_array($roles) ? $roles[0] : $roles);
+            $this->save();
+        }
+        return $this;
+    }
+
+
+public function getPermissionNames(): \Illuminate\Support\Collection
+{
+    return $this->getAllPermissions();
+}
+
+
+
+
+
 }

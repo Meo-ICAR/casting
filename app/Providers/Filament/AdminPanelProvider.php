@@ -59,8 +59,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->userMenuItems([
-                'profile' => \Filament\Navigation\MenuItem::make()->url(fn (): string => route('filament.admin.pages.profile')),
-            ]);
+    ;
+
     }
 }

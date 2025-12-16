@@ -6,15 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\ApplicationStatus; // Assicurati di aver creato l'Enum
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Application extends Model
+class Application extends Model implements HasMedia
 {
+    use InteractsWithMedia;
     protected $guarded = [];
 
     protected $casts = [
         // Mappa la stringa del DB (es. 'pending') direttamente nell'oggetto Enum PHP
         'status' => ApplicationStatus::class,
     ];
+
+     public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('videos')
+             ->singleFile(); // Use this if you want to allow only one video per application
+             // Remove singleFile() if you want to allow multiple videos
+    }
 
     public function role(): BelongsTo
     {

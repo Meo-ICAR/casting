@@ -75,7 +75,17 @@ class ProjectLocationRelationManager extends RelationManager
 
     public function table(Table $table): Table
     {
+        $query = $this->getTableQuery();
+
+        // If user is a director, filter locations by company_id
+        if (auth()->user()->isDirector() && !auth()->user()->isAdmin()) {
+            $query->whereHas('project', function($q) {
+                $q->where('company_id', auth()->user()->company_id);
+            });
+        }
+
         return $table
+            ->query($query)
             ->recordTitleAttribute('name')
             ->columns([
                 TextColumn::make('name')
