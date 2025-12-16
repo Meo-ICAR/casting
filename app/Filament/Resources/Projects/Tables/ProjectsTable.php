@@ -9,6 +9,7 @@ use Filament\Actions\ViewAction;
 use Filament\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
@@ -18,6 +19,16 @@ class ProjectsTable
     {
         return $table
             ->columns([
+                /*
+                           ImageColumn::make('poster')
+                    ->label('')
+                    ->getStateUsing(fn ($record) => $record->getFirstMediaUrl('photos', 'thumb'))
+                       ->label('Poster')
+    ->collection('poster')
+    ->conversion('thumb')
+                    ->defaultImageUrl(url('/images/default-avatar.png'))
+                    ->size(100),
+*/
                 TextColumn::make('title')
                     ->label('Titolo')
                     ->searchable()

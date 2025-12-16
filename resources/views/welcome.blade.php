@@ -53,11 +53,10 @@
                 <div class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-20 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none">
                     <p class="mb-1 text-[#f53003] dark:text-[#FF4433] font-medium tracking-wide uppercase">CastingPro: La Tua Scena è Qui.</p>
                     <h1 class="mb-2 text-[22px] leading-[28px] font-medium">
-                        Sei un <span class="underline underline-offset-4 decoration-[#f53003] dark:decoration-[#FF4433]">Attore</span> o Comparse?
-                        Il Tuo Prossimo Ruolo Ti Aspetta.
+                        Sei un <span class="underline underline-offset-4 decoration-[#f53003] dark:decoration-[#FF4433]">Attore</span>                         Il Tuo Prossimo Ruolo Ti Aspetta.
                     </h1>
                     <p class="mb-4 text-[#706f6c] dark:text-[#A1A09A]">
-                        Il portale che connette direttamente talenti come te con registi, casting director e produzioni cinematografiche e televisive. Massima visibilità, zero complessità.
+                        Il portale che connette direttamente talenti con registi, casting director e produzioni cinematografiche e televisive. Massima visibilità, zero complessità.
                     </p>
 
                     <div class="mb-6">
@@ -65,7 +64,7 @@
                         <ul class="list-disc ml-5 space-y-1 text-sm text-[#706f6c] dark:text-[#A1A09A]">
                             <li>**Accesso Diretto:** Il tuo profilo è visionato  da tanti registi con accesso al database.</li>
                             <li>**Casting Mirati:** Ricevi notifiche solo per i ruoli che matchano le tue caratteristiche e abilità.</li>
-                            <li>**Materiale Unico:** Carica foto professionali, showreel e CV in un archivio sicuro e sempre disponibile.</li>
+                            <li>**Materiale Unico:** Carica foto professionali, showreel e CV nel database sempre disponibile.</li>
                         </ul>
                     </div>
 

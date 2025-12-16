@@ -45,4 +45,9 @@ class Company extends Model
     {
         return $this->hasMany(Project::class);
     }
+
+    public function directorsAndAdmins()
+{
+    return $this->users()->is);
+}
 }

@@ -55,11 +55,11 @@ class ProjectResource extends Resource
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         $query = parent::getEloquentQuery()
-            ->with(['owner', 'roles']);
+            ->with(['owner']);
 
         // If user is a director, only show projects from their company
         if (auth()->user()->isDirector() && !auth()->user()->isAdmin()) {
-            $query->where('company_id', auth()->id());
+            $query->where('company_id', auth()->user()->company_id);
         }
 
         return $query;
