@@ -74,17 +74,7 @@ class ApplicationsTable
                     ->tooltip(fn ($record) => $record->cover_letter)
                     ->toggleable(isToggledHiddenByDefault: true),
 
-SpatieMediaLibraryImageColumn::make('video')
-    ->label('Video')
-    ->collection('videos')
-    ->conversion('thumb')
-    ->size(100)
-    ->extraImgAttributes(['class' => 'rounded']),
-                TextColumn::make('created_at')
-                    ->label('Data Candidatura')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable()
-                    ->toggleable(),
+
 
             ])
             ->filters([

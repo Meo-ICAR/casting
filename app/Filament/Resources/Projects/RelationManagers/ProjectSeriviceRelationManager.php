@@ -96,12 +96,16 @@ class ProjectSeriviceRelationManager extends RelationManager
                     ->searchable(),
 
                 TextColumn::make('quantity')
-                    ->label('Q.tà')
+                    ->label('N')
                     ->numeric()
                     ->sortable(),
 
                 TextColumn::make('needed_from')
                     ->label('Dal')
+                    ->date()
+                    ->sortable(),
+            TextColumn::make('needed_until')
+                    ->label('Al')
                     ->date()
                     ->sortable(),
             ])

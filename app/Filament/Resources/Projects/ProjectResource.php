@@ -9,9 +9,11 @@ use App\Filament\Resources\Projects\Pages\ViewProject;
 use App\Filament\Resources\Projects\Schemas\ProjectForm;
 use App\Filament\Resources\Projects\Schemas\ProjectInfolist;
 use App\Filament\Resources\Projects\Tables\ProjectsTable;
+use App\Filament\Resources\Projects\Tables\ProjectsTableView;
 use App\Models\Project;
 use BackedEnum;
 use UnitEnum;
+use Filament\Navigation\NavigationItem;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -40,7 +42,17 @@ class ProjectResource extends Resource
 
     public static function table(Table $table): Table
     {
+        // Default table view
+        if (request()->has('view') && request()->get('view') === 'custom') {
+            return ProjectsTableView::configure($table);
+        }
         return ProjectsTable::configure($table);
+    }
+
+    public static function getTable2(Table $table): Table
+    {
+        // Alternative table view
+        return ProjectsTableView::configure($table);
     }
 
     public static function getRelations(): array
@@ -55,7 +67,7 @@ class ProjectResource extends Resource
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         $query = parent::getEloquentQuery()
-            ->with(['owner']);
+            ->with(['owner', 'roles']);
 
         // If user is a director, only show projects from their company
         if (auth()->user()->isDirector() && !auth()->user()->isAdmin()) {
@@ -73,6 +85,20 @@ class ProjectResource extends Resource
             'view' => ViewProject::route('/{record}'),
             'edit' => EditProject::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationItems(): array
+    {
+        $items = parent::getNavigationItems();
+
+        // Add a second navigation item for the custom table view
+        $items[] = NavigationItem::make('Custom Projects View')
+            ->url(static::getUrl('index', ['view' => 'custom']))
+            ->icon(static::getNavigationIcon())
+            ->isActiveWhen(fn () => request()->routeIs(static::getRouteBaseName() . '.index') && request()->get('view') === 'custom')
+            ->sort(2);
+
+        return $items;
     }
 
     public static function getNavigationBadge(): ?string

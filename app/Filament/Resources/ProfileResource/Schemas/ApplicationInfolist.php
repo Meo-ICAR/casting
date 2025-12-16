@@ -27,7 +27,7 @@ class ApplicationInfolist
                         TextEntry::make('status')
                             ->label('Stato')
                             ->badge()
-                            ->formatStateUsing(fn ($state) => ($state instanceof ApplicationStatus ? $state : ApplicationStatus::from($state))->label())
+                            ->formatStateUsing(fn ($state) => ($state instanceof ApplicationStatus ? $state : ApplicationStatus::from($state))->getLabel())
                             ->color(fn ($state) => match($state instanceof ApplicationStatus ? $state : ApplicationStatus::from($state)) {
                                 ApplicationStatus::PENDING => 'gray',
                                 ApplicationStatus::UNDER_REVIEW => 'info',

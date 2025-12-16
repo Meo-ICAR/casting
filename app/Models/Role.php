@@ -53,4 +53,18 @@ class Role extends Model
                     ->withPivot(['status', 'director_notes'])
                     ->withTimestamps();
     }
+
+     /**
+     * Get the full address as a single string.
+     */
+ public function getFullRoleAttribute(): string
+{
+    $number = $this->n ? '<br>'."N.{$this->n} " : '<br>';
+    $city = $this->city ?  $this->city : '';
+     $description = $this->description ? "({$this->description})" : '';
+     return trim("{$number}<b>{$this->name}</b>- {$city}-<small> {$description} </small>");
+}
+
+
+
 }

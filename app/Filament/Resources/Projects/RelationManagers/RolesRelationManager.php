@@ -29,6 +29,10 @@ class RolesRelationManager extends RelationManager
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
+   TextColumn::make('n')
+                    ->label('N.')
+                    ->searchable()
+                    ->sortable(),
 
 
                 TextColumn::make('applications_count')

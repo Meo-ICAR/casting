@@ -31,6 +31,10 @@ use Illuminate\Support\Carbon;
 use BackedEnum;
 use UnitEnum;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\Layout\Panel;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
+
 
 class ProfileResource extends Resource
 {
@@ -362,10 +366,10 @@ class ProfileResource extends Resource
 
         // 2. LAYOUT CARD
         ->columns([
-            \Filament\Tables\Columns\Layout\Stack::make([
+            Stack::make([
 
                 // FOTO COPERTINA
-                \Filament\Tables\Columns\ImageColumn::make('profile_photo')
+                ImageColumn::make('profile_photo')
                     ->label('')
                     // Usiamo la logica per prendere l'immagine convertita (thumb)
                     ->getStateUsing(fn ($record) => $record->getFirstMediaUrl('headshots', 'thumb'))
@@ -374,17 +378,17 @@ class ProfileResource extends Resource
                     ->extraImgAttributes(['class' => 'object-cover w-full rounded-t-xl']),
 
                 // PANNELLO DATI
-                \Filament\Tables\Columns\Layout\Panel::make([
-                    \Filament\Tables\Columns\Layout\Stack::make([
+                Panel::make([
+                    Stack::make([
 
                         // Riga 1: Nome (Grande) e Età (Badge)
-                        \Filament\Tables\Columns\Layout\Split::make([
-                            \Filament\Tables\Columns\TextColumn::make('stage_name')
+                        Split::make([
+                            TextColumn::make('stage_name')
                                 ->weight('bold') // Usa stringa semplice
                                 ->size('lg')     // CORRETTO: Usa stringa 'lg' invece della classe
                                 ->searchable(),
 
-                            \Filament\Tables\Columns\TextColumn::make('age')
+                            TextColumn::make('age')
                                 ->formatStateUsing(fn ($state) => $state . ' anni')
                                 ->badge()
                                 ->color('gray')
@@ -392,14 +396,14 @@ class ProfileResource extends Resource
                         ]),
 
                         // Riga 2: Altezza e Visibilità
-                        \Filament\Tables\Columns\Layout\Split::make([
-                            \Filament\Tables\Columns\TextColumn::make('height_cm')
+                        Split::make([
+                            TextColumn::make('height_cm')
                                 ->formatStateUsing(fn ($state) => $state . ' cm')
                                 ->icon('heroicon-m-arrows-up-down')
                                 ->color('gray')
                                 ->size('sm'), // CORRETTO: Usa stringa 'sm'
 
-                            \Filament\Tables\Columns\TextColumn::make('scene_nudo')
+                           TextColumn::make('scene_nudo')
                                 ->badge()
                                 ->color(fn (string $state): string => match ($state) {
                                     'no' => 'gray',
@@ -417,26 +421,26 @@ class ProfileResource extends Resource
                         ]),
 
                         // Riga 3: Visibilità e Privacy
-                        \Filament\Tables\Columns\Layout\Split::make([
+                        Split::make([
                             /*
                             \Filament\Tables\Columns\TextColumn::make('consenso_privacy')
                                 ->formatStateUsing(fn ($state) => $state ? '✅ Consenso Privacy' : '❌ Manca Consenso')
                                 ->color(fn ($state) => $state ? 'success' : 'danger')
                                 ->size('xs'),
                              */
-                             \Filament\Tables\Columns\TextColumn::make('weight_kg')
+                             TextColumn::make('weight_kg')
                                 ->formatStateUsing(fn ($state) => $state . ' kg')
                                 ->icon('heroicon-s-scale')
                                 ->color('gray')
                                 ->size('sm'), // CORRETTO: Usa stringa 'sm'
-                            \Filament\Tables\Columns\IconColumn::make('is_visible')
+                            IconColumn::make('is_visible')
                                 ->boolean()
                                 ->label('Visibile')
                                 ->alignEnd(),
                         ]),
 
                         // Riga 4: Telefono con WhatsApp
-                          \Filament\Tables\Columns\Layout\Split::make([
+                          Split::make([
                         TextColumn::make('phone')
                             ->label('WhatsApp')
                             ->color('success')
