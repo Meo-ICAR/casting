@@ -19,9 +19,9 @@ class Authenticate extends Middleware
             }
 
             // For web requests, redirect to the appropriate login route
-        //    if ($request->is('admin*')) {
-            //    return route('filament.admin.auth.login');
-         //   }
+           if ($request->is('admin*')) {
+              return route('filament.admin.auth.login');
+           }
 
             // For other routes, use the default login
             return route('login');

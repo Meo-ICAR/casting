@@ -41,9 +41,10 @@ class ProfileResource extends Resource
     protected static ?string $model = Profile::class;
 
 
-     protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-user';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-user';
     protected static ?string $navigationLabel = 'Attori';
     protected static ?string $modelLabel = 'Attore';
+    protected static ?string $pluralModelLabel = 'Attori';
     protected static UnitEnum|string|null $navigationGroup = 'Database';
     protected static ?int $navigationSort = 1;
 

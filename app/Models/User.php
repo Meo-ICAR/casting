@@ -22,7 +22,26 @@ class User extends Authenticatable implements FilamentUser
 
 
 
-    protected $fillable = ['name', 'last_name', 'email', 'password', 'role', 'company_id'];
+    protected $fillable = [
+        'name',
+        'last_name',
+        'email',
+        'password',
+        'role',
+        'company_id',
+        'ip_address',
+        'user_agent',
+        'privacy_policy_accepted_at',
+        'terms_accepted_at',
+        'data_processing_consent_at',
+        'data_erasure_requested_at',
+        'data_anonymized_at',
+        'marketing_consent',
+        'newsletter_subscription',
+        'data_processing_consent',
+        'newsletter_subscription',
+
+    ];
 
     protected $hidden = ['password', 'remember_token'];
 
@@ -173,9 +192,23 @@ public function canAccessPanel(Panel $panel): bool
     }
    protected static function booted()
     {
+        static::creating(function ($user) {
+            // Set IP address and user agent during user creation
+            $user->ip_address = request()->ip();
+            $user->user_agent = request()->userAgent();
+
+             // Set privacy-related timestamps
+        $now = now();
+        $user->privacy_policy_accepted_at = $now;
+        $user->terms_accepted_at = $now;
+        $user->data_processing_consent_at = $now;
+        $user->data_erasure_requested_at = null; // Set to null by default
+        $user->data_anonymized_at = null; // Set to null by default
+        });
+
         static::created(function ($user) {
             // Assign default 'actor' role to new users
-            $user->assignRole('actor');
+          //  $user->assignRole('actor');
 
             // Create profile for new user
             $user->profile()->create();

@@ -45,7 +45,8 @@ Route::view('/terms', 'terms')->name('terms');
 
 // Pagina Termini e Condizioni
 Route::view('/cookie', 'cookie')->name('cookie');
-
+/*
 Route::get('/admin/login', function () {
     return redirect()->route('/'); // or any other route you want to redirect to
 })->middleware('debug.login');
+*/
