@@ -132,7 +132,16 @@ public function hasRole($role): bool
 // Also, update the canAccessPanel method to use the new hasRole method:
 public function canAccessPanel(Panel $panel): bool
 {
+    /*
     return $this->hasRole('admin') || $this->hasRole('host') || $this->hasRole('servicer') || $this->hasRole('actor');
+
+    */
+    \Log::info('Tentativo accesso utente ID: ' . $this->id, [
+        'email' => $this->email,
+        'role' => $this->role, // o la tua logica dei ruoli
+    ]);
+    return true;
+
 }
  public function hasAnyRole($roles): bool
     {
