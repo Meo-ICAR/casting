@@ -111,7 +111,7 @@
 
                     <h1 class="text-5xl lg:text-7xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-200 bg-clip-text text-transparent leading-tight">
                         CastingPro:<br>
-                        <span class="bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 bg-clip-text text-transparent">Il Tuo</span><br>
+                        <span class="bg-gradient-to-r from-gray-600 via-orange-500 to-yellow-500 bg-clip-text text-transparent">Il Tuo</span><br>
                         Palcoscenico Digitale
                     </h1>
 
