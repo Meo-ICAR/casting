@@ -32,16 +32,16 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-          ->registration(CustomRegister::class) // <--- Usa la tua classe custom
+            ->registration(CustomRegister::class) // <--- Usa la tua classe custom
             ->profile()
-  ->passwordReset()
-        ->emailVerification()
-        ->emailChangeVerification()
-             ->authMiddleware([
-            \App\Http\Middleware\Authenticate::class,
-        ])
-        ->authGuard('web')
-        ->authPasswordBroker('users')
+            ->passwordReset()
+            ->emailVerification()
+            ->emailChangeVerification()
+            ->authMiddleware([
+                \App\Http\Middleware\Authenticate::class,
+            ])
+            ->authGuard('web')
+            ->authPasswordBroker('users')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

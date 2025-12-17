@@ -111,7 +111,7 @@ public function hasRole($role): bool
 // Also, update the canAccessPanel method to use the new hasRole method:
 public function canAccessPanel(Panel $panel): bool
 {
-    return $this->hasRole('admin') || $this->hasRole('host') || $this->hasRole('servicer');
+    return $this->hasRole('admin') || $this->hasRole('host') || $this->hasRole('servicer') || $this->hasRole('actor');
 }
  public function hasAnyRole($roles): bool
     {

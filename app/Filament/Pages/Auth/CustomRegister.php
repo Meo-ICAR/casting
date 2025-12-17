@@ -11,6 +11,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 
 class CustomRegister extends Register
