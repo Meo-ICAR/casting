@@ -6,6 +6,12 @@ use App\Livewire\CastingSearch;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\SocialAuthController;
 
+
+use App\Models\User;
+use Illuminate\Support\Facades\Password;
+use Filament\Facades\Filament;
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -50,3 +56,14 @@ Route::get('/admin/login', function () {
     return redirect()->route('/'); // or any other route you want to redirect to
 })->middleware('debug.login');
 */
+Route::get('/test-reset', function () {
+    $user = \App\Models\User::first();
+
+    // Generiamo il token manualmente
+    $token = Password::broker()->createToken($user);
+
+    // Chiamiamo il metodo che abbiamo appena creato nel modello User
+    $user->sendPasswordResetNotification($token);
+
+    return "Notifica inviata usando la logica di Filament! Controlla i log o l'email.";
+});

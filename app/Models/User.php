@@ -14,6 +14,8 @@ use Filament\Panel;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 
+use Filament\Facades\Filament;
+use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -248,7 +250,17 @@ public function getPermissionNames(): \Illuminate\Support\Collection
 }
 
 
+public function sendPasswordResetNotification($token): void
+{
+    // Chiediamo a Filament di generare l'URL corretto per il pannello corrente
+    $url = Filament::getResetPasswordUrl($token, $this);
 
+    // Creiamo la notifica standard ma gli iniettiamo l'URL di Filament
+    $notification = new ResetPasswordNotification($token);
+    $notification->createUrlUsing(fn ($user, $token) => $url);
+
+    $this->notify($notification);
+}
 
 
 }

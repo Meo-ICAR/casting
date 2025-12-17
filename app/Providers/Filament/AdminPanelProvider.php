@@ -34,7 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->registration(CustomRegister::class) // <--- Usa la tua classe custom
             ->profile()
-            ->passwordReset()
+            ->passwordReset() // <-- Deve essere attivo
             ->emailVerification()
             ->emailChangeVerification()
             ->authMiddleware([
