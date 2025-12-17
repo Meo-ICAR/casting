@@ -147,29 +147,99 @@
                     </div>
                 </div>
 
-                <!-- Hero Image -->
-                <div class="lg:order-2 relative group">
-                    <div class="relative w-full aspect-[4/3] lg:aspect-square rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 bg-gradient-to-br from-gray-100/50 to-gray-200/50 dark:from-gray-800/50 dark:to-gray-900/50 backdrop-blur-sm border border-white/20 hover:border-white/40">
-                        <!-- Mockup frame -->
-                        <div class="absolute inset-0 bg-gradient-to-r from-red-500/10 via-orange-500/10 to-yellow-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <div class="absolute -inset-2 bg-gradient-to-r from-red-400/20 to-orange-400/20 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition-all duration-500"></div>
+               <!-- Hero Carousel -->
+<div class="lg:order-2 relative group">
+    <div class="relative w-full aspect-[4/3] lg:aspect-square rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500">
 
-                        <!-- Replace with your hero image -->
-                        <img src="{{ asset('castingprobanner.png') }}"
-                             alt="Attore professionale in scena di casting"
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+        <!-- Carousel Container -->
+        <div class="carousel-container h-full w-full relative" x-data="carousel()" x-init="$nextTick(() => init())">
 
-                        <!-- Features badges -->
-                        <div class="absolute top-6 left-6 space-y-2">
-                            <div class="inline-flex items-center px-3 py-1.5 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-lg text-sm font-medium border border-white/50">
-                                📸 Portfolio Illimitato
-                            </div>
-                            <div class="inline-flex items-center px-3 py-1.5 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-lg text-sm font-medium border border-white/50">
-                                🎬 Showreel
-                            </div>
+            <!-- Slides -->
+            <div class="carousel-slides h-full w-full overflow-hidden">
+                <div class="carousel-track flex transition-transform duration-700 ease-in-out" :style="`transform: translateX(-${currentIndex * 100}%)`">
+
+                    <!-- Slide 1: Attore protagonista -->
+                    <div class="carousel-slide flex-shrink-0 w-full h-full relative">
+                        <img src="{{ asset('attore.png') }}"
+                             alt="Attore protagonista in audizione"
+                             class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-8 left-8 text-white">
+                            <h3 class="text-2xl font-bold mb-2">Protagonista</h3>
+                            <p class="text-lg opacity-90">Il tuo ruolo principale</p>
                         </div>
                     </div>
+
+                    <!-- Slide 2: Casting Director -->
+                    <div class="carousel-slide flex-shrink-0 w-full h-full relative">
+                          <img src="{{ asset('casting.png') }}"
+                              alt="Casting director al lavoro"
+                             class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-8 left-8 text-white">
+                            <h3 class="text-2xl font-bold mb-2">Casting Director</h3>
+                            <p class="text-lg opacity-90">Trova il talento perfetto</p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3: Set cinematografico -->
+                    <div class="carousel-slide flex-shrink-0 w-full h-full relative">
+                          <img src="{{ asset('location.png') }}"
+                             alt="Set cinematografico professionale"
+                             class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-8 left-8 text-white">
+                            <h3 class="text-2xl font-bold mb-2">Location</h3>
+                            <p class="text-lg opacity-90">Fai girare film da te</p>
+                        </div>
+                    </div>
+
+                      <!-- Slide 4: Servizi -->
+                    <div class="carousel-slide flex-shrink-0 w-full h-full relative">
+                        <img src="{{ asset('service.png') }}"
+                              alt="Set cinematografico professionale"
+                             class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-8 left-8 text-white">
+                            <h3 class="text-2xl font-bold mb-2">Service</h3>
+                            <p class="text-lg opacity-90">Proponi i tuoi servizi al cinema</p>
+                        </div>
+                    </div>
+
                 </div>
+            </div>
+
+            <!-- Indicators -->
+            <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                <template x-for="(slide, index) in slides" :key="index">
+                    <button @click="goToSlide(index)"
+                            :class="`w-3 h-3 rounded-full transition-all duration-300 ${currentIndex === index ? 'bg-white scale-125 shadow-lg' : 'bg-white/50 hover:bg-white'}`">
+                    </button>
+                </template>
+            </div>
+
+            <!-- Navigation Arrows -->
+            <button class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur-sm p-3 rounded-full text-white hover:text-white transition-all duration-300"
+                    @click="prevSlide()" x-show="currentIndex > 0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <button class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 backdrop-blur-sm p-3 rounded-full text-white hover:text-white transition-all duration-300"
+                    @click="nextSlide()">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+
+        </div>
+
+
+
+    </div>
+</div>
+
+
             </div>
         </section>
 
@@ -251,8 +321,27 @@
     function carousel() {
         return {
             currentIndex: 0,
-            slides: 3,
+            slides: 4,
             interval: null,
+            badges: [
+            {
+                title: '📸 Portfolio Illimitato',
+                subtitle: 'Mostra il meglio di te'
+            },
+
+            {
+                title: '📸 Ruoli su misura',
+                subtitle: 'Casting perfetti per te'
+            },
+             {
+                title: '🎬 Il set da te',
+                subtitle: 'Ulteriori guadagni'
+            },
+              {
+                title: '🎭 Opportunità',
+                subtitle: 'Valorizza i tuoi servizi'
+            },
+        ],
 
             init() {
                 this.startAutoPlay();
