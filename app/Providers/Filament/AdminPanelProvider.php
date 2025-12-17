@@ -21,6 +21,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Support\Assets\Js;
 use App\Filament\Widgets\ProjectSlider;
 //use \App\Http\Middleware\RedirectIfAuthenticated;
+use App\Filament\Pages\Auth\CustomRegister;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -31,9 +32,11 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->registration()
+          ->registration(CustomRegister::class) // <--- Usa la tua classe custom
             ->profile()
-
+  ->passwordReset()
+        ->emailVerification()
+        ->emailChangeVerification()
              ->authMiddleware([
             \App\Http\Middleware\Authenticate::class,
         ])

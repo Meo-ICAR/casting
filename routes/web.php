@@ -15,20 +15,9 @@ Route::post('profiles/{profile}/toggle-visibility', [\App\Http\Controllers\Profi
 Route::get('profiles-search', [\App\Http\Controllers\ProfileController::class, 'search'])
     ->name('profiles.search');
 
-
-
-Route::get('/casting/search', CastingSearch::class)
-    ->middleware(['auth']) // Proteggilo se vuoi che sia solo per iscritti
-    ->name('casting.search');
-
 // Esempio URL: /talent/mario-rossi
 Route::get('/talent/{profile:slug}', [ProfileController::class, 'show'])
     ->name('profile.show');
-
-Route::get('/dashboard', function () {
-    // Reindirizza l'utente dove preferisci, es. alla ricerca casting
-    return redirect()->route('casting.search');
-})->middleware(['auth', 'verified'])->name('dashboard'); // <--- Il nome che mancava
 
 // Logout route (per link/bottoni che usano route('logout'))
 Route::post('/logout', function () {

@@ -2,19 +2,31 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
+use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
-class Authenticate
+class Authenticate extends Middleware
 {
     /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * Get the path the user should be redirected to when they are not authenticated.
      */
-    public function handle(Request $request, Closure $next): Response
+    protected function redirectTo(Request $request): ?string
     {
-        return $next($request);
+        if (!$request->expectsJson()) {
+            // Check if this is an API request or web request
+            if ($request->is('api/*')) {
+                return route('api.unauthorized');
+            }
+
+            // For web requests, redirect to the appropriate login route
+            if ($request->is('admin*')) {
+                return route('filament.admin.auth.login');
+            }
+
+            // For other routes, use the default login
+            return route('login');
+        }
+
+        return null;
     }
 }

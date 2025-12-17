@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Enums\UserRole;
 use Filament\Panel;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 
 
 class User extends Authenticatable implements FilamentUser
