@@ -81,18 +81,15 @@
                 @if (Route::has('login'))
                     <div class="flex items-center space-x-4">
                         @auth
-                            <a href="{{ url('/dashboard') }}"
-                               class="px-6 py-2.5 bg-white/80 backdrop-blur-sm hover:bg-white/100 border border-gray-200/50 hover:border-gray-300 rounded-xl text-sm font-medium shadow-sm hover:shadow-md transition-all duration-200">
+                            <a href="{{ url('/dashboard') }}" class="px-6 py-2.5 bg-white/80 backdrop-blur-sm hover:bg-white/100 border border-gray-200/50 hover:border-gray-300 rounded-xl text-sm font-medium shadow-sm hover:shadow-md transition-all duration-200">
                                 Dashboard
                             </a>
                         @else
-                            <a href="{{ route('login') }}"
-                               class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors">
+                            <a href="{{ route('login') }}" class="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors">
                                 Accedi
                             </a>
                             @if (Route::has('register'))
-                                <a href="{{ route('register') }}"
-                                   class="px-6 py-2.5 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+                                <a href="{{ route('register') }}" class="px-6 py-2.5 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
                                     Registrati Gratis
                                 </a>
                             @endif
