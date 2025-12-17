@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Laravel\Scout\Searchable; // <--- Importante
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasWhatsapp; // <--- Importa il Trait
 
@@ -16,42 +15,42 @@ use App\Traits\HasWhatsapp; // <--- Importa il Trait
 class Profile extends Model implements HasMedia // <--- 1. Implementa l'interfaccia
 {
     use InteractsWithMedia; // <--- 2. Usa il Trait
-    use Searchable; // <--- Aggiungi il Trait
     use HasWhatsapp; // <--- Attivalo qui
 
     protected $guarded = [];
 
-    /**
-     * Definisce quali dati vengono inviati a Meilisearch.
-     */
-    public function toSearchableArray(): array
+    protected $attributes = [
+        'capabilities' => '{"skills": []}',
+    ];
+
+    public function getCapabilitiesAttribute($value)
     {
-        // Carichiamo le relazioni se servono (es. nome utente)
-        $this->loadMissing('user');
+        if (is_array($value)) {
+            $capabilities = $value;
+        } elseif (is_string($value)) {
+            $capabilities = json_decode($value, true) ?: [];
+        } else {
+            $capabilities = [];
+        }
 
-        return [
-            'id' => $this->id,
-            'name' => $this->stage_name ?? $this->user->name,
-            'gender' => $this->gender,
-            'age' => $this->age, // Usiamo l'accessor creato prima
-            'height' => (int) $this->height_cm,
+        // Ensure skills is always an array
+        if (!isset($capabilities['skills']) || !is_array($capabilities['skills'])) {
+            $capabilities['skills'] = [];
+        }
 
-            // --- APPIATTIMENTO DEI JSON ---
-            // Estraiamo i dati dai JSON e li mettiamo al primo livello
-            // così sarà facilissimo filtrarli.
-
-            'eye_color' => $this->appearance['eyes'] ?? null,
-            'hair_color' => $this->appearance['hair_color'] ?? null,
-            'ethnicity' => $this->appearance['ethnicity'] ?? null,
-
-            // Per gli array (es. lingue), Meilisearch li gestisce benissimo
-            'languages' => $this->capabilities['languages'] ?? [],
-            'skills' => $this->capabilities['skills'] ?? [],
-
-            // Utile per mostrare subito l'immagine nei risultati senza query al DB
-            'thumbnail_url' => $this->getFirstMediaUrl('headshots', 'thumb'),
-        ];
+        return $capabilities;
     }
+
+    public function setCapabilitiesAttribute($value)
+    {
+        if (is_array($value)) {
+            $this->attributes['capabilities'] = json_encode($value);
+        } else {
+            $this->attributes['capabilities'] = $value;
+        }
+    }
+
+
 
 // 3. Definisci le conversioni (Miniature)
     public function registerMediaConversions(Media $media = null): void
@@ -96,7 +95,6 @@ class Profile extends Model implements HasMedia // <--- 1. Implementa l'interfac
         'birth_date' => 'date',
         'appearance' => 'array',
         'measurements' => 'array',
-        'capabilities' => 'array',
         'socials' => 'array',
         'is_visible' => 'boolean',
         'is_represented' => 'boolean',
