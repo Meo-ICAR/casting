@@ -1,2 +1,2 @@
-*
-!.gitignore
+# Track all files in this directory
+# Previously ignored files will now be tracked
