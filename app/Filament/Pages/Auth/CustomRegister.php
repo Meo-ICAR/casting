@@ -23,22 +23,35 @@ class CustomRegister extends Register
                 $this->getEmailFormComponent(),
                 $this->getPasswordFormComponent(),
                 $this->getPasswordConfirmationFormComponent(),
+                 Select::make('role')
+                    ->label('Iscriviti come')
+                    ->options([
+                        'actor' => 'Attore/Attrice',
+                        'director' => 'Regista',
+                        'service' => 'Professionista',
+                        'location' => 'Locatario',
+                    ])
+                    ->default('actor') // Default role
+                    ->required()
+                    ->in(['actor', 'director', 'company'])
+                    ->native(false)
+                    ->live(),
 
                 // Sezione GDPR
                 Section::make('Privacy & Consensi')
                     ->description('Per proseguire è necessario accettare i termini del servizio.')
                     ->schema([
-                        Checkbox::make('terms')
+                        Checkbox::make('data_processing_consent')
                             ->label(fn () => new HtmlString('Accetto i <a href="/terms" class="text-primary-600 underline" target="_blank">Termini e Condizioni</a>'))
                             ->required() // Rende il campo obbligatorio
                             ->rules(['accepted']),
 
-                        Checkbox::make('privacy')
+                        Checkbox::make('marketing_consent')
                             ->label(fn () => new HtmlString('Ho letto l\'<a href="/privacy" class="text-primary-600 underline" target="_blank">Informativa Privacy</a>'))
                             ->required()
                             ->rules(['accepted']),
 
-                        Checkbox::make('marketing')
+                        Checkbox::make('newsletter_subscription')
                             ->label('Acconsento all\'invio di materiale informativo (opzionale)'),
                     ]),
             ]);

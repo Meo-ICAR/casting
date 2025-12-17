@@ -36,3 +36,12 @@ Route::get('/profile/{profile}/roles', function (App\Models\Profile $profile) {
 // Social Login Routes
 Route::get('/login/{provider}', [SocialAuthController::class, 'redirectToProvider'])->name('social.login');
 Route::get('/login/{provider}/callback', [SocialAuthController::class, 'handleProviderCallback'])->name('social.callback');
+
+// Pagina Privacy Policy
+Route::view('/privacy', 'privacy')->name('privacy');
+
+// Pagina Termini e Condizioni
+Route::view('/terms', 'terms')->name('terms');
+
+// Pagina Termini e Condizioni
+Route::view('/cookie', 'cookie')->name('cookie');
