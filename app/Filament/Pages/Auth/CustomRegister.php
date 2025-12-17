@@ -24,6 +24,7 @@ class CustomRegister extends Register
                 $this->getEmailFormComponent(),
                 $this->getPasswordFormComponent(),
                 $this->getPasswordConfirmationFormComponent(),
+                /*
                  Select::make('role')
                     ->label('Iscriviti come')
                     ->options([
@@ -37,7 +38,7 @@ class CustomRegister extends Register
                     ->in(['actor', 'director', 'company'])
                     ->native(false)
                     ->live(),
-
+*/
                 // Sezione GDPR
                 Section::make('Privacy & Consensi')
                     ->description('Per proseguire è necessario accettare i termini del servizio.')
