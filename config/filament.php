@@ -1,5 +1,10 @@
 <?php
-
+use Filament\Pages\Auth\PasswordReset\RequestPasswordReset;
+use Filament\Pages\Auth\PasswordReset\ResetPassword;
+use Filament\Pages\Auth\Register;
+use Filament\Pages\Auth\Login;
+use Filament\Pages\Auth\EmailVerificationNotice;
+use App\Filament\Pages\Auth\CustomRegister;
 return [
 
     /*
@@ -123,11 +128,11 @@ return [
         'auth' => [
             'guard' => 'web',
             'pages' => [
-                'login' => \App\Filament\Pages\Auth\Login::class,
-                'register' => \App\Filament\Pages\Auth\Register::class,
-                'request-password-reset' => \Filament\Pages\Auth\PasswordReset\RequestPasswordReset::class,
-                'reset-password' => \Filament\Pages\Auth\PasswordReset\ResetPassword::class,
-                'verify-email' => \App\Filament\Pages\Auth\EmailVerificationNotice::class,
+                'login' => Login::class,
+                'register' => Register::class,
+                'request-password-reset' => RequestPasswordReset::class,
+                'reset-password' => ResetPassword::class,
+                'verify-email' => EmailVerificationNotice::class,
             ],
         ],
         // ...
