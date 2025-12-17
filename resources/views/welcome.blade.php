@@ -70,10 +70,10 @@
         <nav class="max-w-7xl mx-auto px-6 py-6 lg:px-8">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-2">
-                    <div class="w-10 h-10 bg-gradient-to-r from-red-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <div class="w-10 h-10 bg-gradient-to-r from-black-500 to-gray-500 rounded-xl flex items-center justify-center shadow-lg">
                         <span class="text-white font-bold text-lg">🎬</span>
                     </div>
-                    <span class="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
+                    <span class="text-2xl font-bold bg-gradient-to-r from-black-600 to-gray-500 bg-clip-text text-black">
                         CastingPro
                     </span>
                 </div>
@@ -247,7 +247,7 @@
                     Perché CastingPro?
                 </h2>
                 <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                    La piattaforma per casting in Italia. Tecnologia avanzata, matching intelligente, risultati garantiti.
+                    La piattaforma di casting in Italia. Tecnologia avanzata, matching intelligente, risultati garantiti.
                 </p>
             </div>
 
@@ -280,13 +280,13 @@
 
         <!-- CTA Section -->
         <section class="max-w-4xl mx-auto px-6 lg:px-8 py-20 text-center">
-            <div class="bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 rounded-3xl p-12 lg:p-20 shadow-2xl">
-                <h2 class="text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
+            <div class="bg-gradient-to-r from-black-500 via-gray-500 to-black-500 rounded-3xl p-12 lg:p-20 shadow-2xl">
+                <h2 class="text-4xl lg:text-5xl font-bold text-black mb-6 leading-tight">
                     Pronto per il Tuo<br>
-                    <span class="text-6xl">Grande Ruolo?</span>
+                    <span class="text-6xl">Ruolo?</span>
                 </h2>
-                <p class="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
-                    Unisciti a migliaia di attori che hanno trovato il loro ruolo perfetto con CastingPro.
+                <p class="text-xl text-black/90 mb-10 max-w-2xl mx-auto">
+                    Unisciti ai tanti attori che hanno trovato il loro ruolo perfetto con CastingPro.
                 </p>
                 @if (Route::has('register'))
                     <a href="{{ route('register') }}"
